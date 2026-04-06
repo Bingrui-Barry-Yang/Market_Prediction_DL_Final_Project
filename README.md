@@ -278,3 +278,9 @@ The final repository should be organized as a reproducible project rather than a
 - `tests/` for leakage checks, alignment checks, and smoke tests
 
 The environment will be managed with `uv` and Docker so the project is reproducible and easy to run.
+
+## New Plans
+- Use Google API to get news articles, "top 15 articles on bitcoin on day i"
+- Use Coinbase API to get the change in BTC price on day i
+- Crunch data (influence score layer?)
+- Try to predict price change today based on that
