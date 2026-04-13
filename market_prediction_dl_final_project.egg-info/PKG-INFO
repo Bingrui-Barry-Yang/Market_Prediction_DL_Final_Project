@@ -1,3 +1,28 @@
+Metadata-Version: 2.4
+Name: market-prediction-dl-final-project
+Version: 0.1.0
+Summary: Bitcoin news trust-weighted trend prediction system
+Author: Project Team
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi>=0.116.0
+Requires-Dist: httpx>=0.28.0
+Requires-Dist: lightgbm>=4.6.0
+Requires-Dist: mlflow>=3.0.0
+Requires-Dist: orjson>=3.10.0
+Requires-Dist: pandas>=2.2.0
+Requires-Dist: polars>=1.24.0
+Requires-Dist: pyarrow>=20.0.0
+Requires-Dist: pydantic>=2.11.0
+Requires-Dist: pydantic-settings>=2.8.0
+Requires-Dist: python-dotenv>=1.0.1
+Requires-Dist: python-multipart>=0.0.20
+Requires-Dist: simhash>=2.1.2
+Requires-Dist: streamlit>=1.44.0
+Requires-Dist: tenacity>=9.0.0
+Requires-Dist: typer>=0.16.0
+Requires-Dist: uvicorn[standard]>=0.34.0
+
 # Bitcoin News Trust-Weighted Trend Prediction System
 
 ## Overview
@@ -316,36 +341,6 @@ Market_Prediction_DL_Final_Project/                      # Project root; shared 
 
 The project is designed around four main containers managed by `docker compose`.
 
-### Docker setup
-
-Install Docker Desktop on macOS:
-
-```bash
-brew install --cask docker
-```
-
-Then open Docker Desktop once:
-
-```bash
-open -a Docker
-```
-
-Wait until Docker Desktop reports that Docker is running, then verify:
-
-```bash
-docker --version
-docker compose version
-docker info
-```
-
-Expected result:
-
-- `docker --version` returns a version string
-- `docker compose version` returns a version string
-- `docker info` returns server details instead of a daemon connection error
-
-For this project, `docker compose up --build` is only needed when you want to build and start the repo services. It is not required just to confirm that Docker is installed.
-
 ### 1. `scraper-filter`
 
 Responsibilities:
@@ -412,21 +407,6 @@ Primary inputs and outputs:
 - keep one shared codebase and separate runtime entrypoints
 - mount data and outputs as volumes for persistence
 - keep API keys and config in environment variables
-
-Typical project startup flow:
-
-```bash
-cp .env.example .env
-uv sync
-docker compose up --build
-```
-
-Use `docker compose up --build` after:
-
-- Docker Desktop is installed and running
-- `.env` has been created
-- the required API keys have been added
-- you are ready to build and launch the project containers
 
 ---
 

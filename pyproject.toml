@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "market-prediction-dl-final-project"
+version = "0.1.0"
+description = "Bitcoin news trust-weighted trend prediction system"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Project Team" }
+]
+dependencies = [
+  "fastapi>=0.116.0",
+  "httpx>=0.28.0",
+  "lightgbm>=4.6.0",
+  "mlflow>=3.0.0",
+  "orjson>=3.10.0",
+  "pandas>=2.2.0",
+  "polars>=1.24.0",
+  "pyarrow>=20.0.0",
+  "pydantic>=2.11.0",
+  "pydantic-settings>=2.8.0",
+  "python-dotenv>=1.0.1",
+  "python-multipart>=0.0.20",
+  "simhash>=2.1.2",
+  "streamlit>=1.44.0",
+  "tenacity>=9.0.0",
+  "typer>=0.16.0",
+  "uvicorn[standard]>=0.34.0",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3.0",
+  "pytest-asyncio>=0.26.0",
+  "ruff>=0.11.0",
+]
+training = [
+  "torch>=2.6.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["src*", "apps*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

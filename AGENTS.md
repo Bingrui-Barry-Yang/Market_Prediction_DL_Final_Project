@@ -26,7 +26,7 @@ The repository should be implemented as a single Python monorepo with:
 - shared business logic in `src/`
 - container-facing application entrypoints in `apps/`
 - reproducible operational runners in `scripts/`
-- layered persisted artifacts in `data/`
+- layered persisted datasets in `data/` with generated runtime byproducts consolidated under `outputs/`
 
 The runtime is split into four containers:
 
@@ -75,15 +75,14 @@ Market_Prediction_DL_Final_Project/                      # Project root; shared 
 │   ├── backfill/                                       # Full historical rebuild workflows and one-off reprocessing jobs
 │   ├── validation/                                     # Data quality, schema, completeness, and drift validation commands
 │   └── deploy/                                         # Local release, model promotion, and container startup helper commands
-├── data/                                               # Layered data lake for all raw, intermediate, and final persisted artifacts
+├── data/                                               # Layered data lake for raw, intermediate, and model-ready persisted datasets
 │   ├── raw/                                            # Raw JSONL articles and raw BTC market data exactly after collection/normalization
 │   ├── filtered/                                       # Stage 2 output: only articles judged to contain future BTC price predictions
 │   ├── scored/                                         # Stage 3 output: LLM-enriched JSONL with sentiment, confidence, and horizon
 │   ├── features/                                       # Parquet datasets for labels, author stats, trust features, and forecast inputs
 │   ├── models/                                         # Exported trained models, metadata bundles, and production-ready inference assets
 │   ├── external/                                       # Manually supplied assets such as anchor labels, vendor exports, or reference data
-│   ├── interim/                                        # Temporary checkpoints, partial batch outputs, and recoverable join artifacts
-│   └── monitoring/                                     # Prediction logs, drift snapshots, inference traces, and dashboard-ready monitoring data
+│   └── interim/                                        # Temporary checkpoints, partial batch outputs, and recoverable join artifacts
 ├── prompts/                                            # Versioned prompt assets used by filtering, scoring, and prompt optimization
 │   ├── filter/                                         # Binary forward-looking prediction detection prompts and evaluation variants
 │   ├── scoring/                                        # Gemini scoring prompts for sentiment certainty and horizon extraction
@@ -112,9 +111,11 @@ Market_Prediction_DL_Final_Project/                      # Project root; shared 
 │   ├── env/                                            # Environment variable templates and documented runtime configuration sets
 │   ├── logging/                                        # Centralized logging configuration for all containers and local jobs
 │   └── healthchecks/                                   # Service health check definitions and helper scripts
-├── mlruns/                                             # Local MLflow tracking store for experiments, metrics, and artifacts
-├── artifacts/                                          # Exported reports, plots, packaged outputs, and promoted evaluation artifacts
-├── logs/                                               # Runtime logs for batch jobs, services, and debugging
+├── outputs/                                            # Consolidated generated outputs so runtime byproducts stay in one clean top-level area
+│   ├── artifacts/                                      # Exported reports, plots, packaged outputs, and promoted evaluation artifacts
+│   ├── logs/                                           # Runtime logs for batch jobs, services, and debugging
+│   ├── mlruns/                                         # Local MLflow tracking store for experiments, metrics, and artifacts
+│   └── monitoring/                                     # Prediction logs, drift snapshots, inference traces, and dashboard-ready monitoring data
 └── docs/                                               # Human-readable technical documentation for architecture and operations
     ├── architecture/                                   # System diagrams, service boundaries, and data-flow documentation
     ├── pipeline/                                       # Stage-by-stage operational docs and run order documentation
@@ -125,6 +126,40 @@ Market_Prediction_DL_Final_Project/                      # Project root; shared 
 ---
 
 ## Four-Container Docker Design
+
+### Docker bootstrap instructions
+
+Install Docker Desktop on macOS:
+
+```bash
+brew install --cask docker
+```
+
+Start Docker Desktop:
+
+```bash
+open -a Docker
+```
+
+Verify installation and daemon health:
+
+```bash
+docker --version
+docker compose version
+docker info
+```
+
+Success criteria:
+
+- Docker CLI is installed
+- Docker Compose is installed
+- `docker info` returns server details
+
+Important usage note:
+
+- `docker compose up --build` is not needed to verify installation
+- use `docker compose up --build` only when you want to build and run the project services
+- in this repo, that step is most useful after `.env` is populated and service logic exists beyond scaffolding
 
 ### Base image
 
@@ -143,7 +178,7 @@ Responsibilities:
 Mounts:
 
 - `data/`
-- `logs/`
+- `outputs/logs/`
 - `prompts/`
 
 Operational concerns:
@@ -165,7 +200,7 @@ Mounts:
 - `data/`
 - `prompts/`
 - `experiments/`
-- `artifacts/`
+- `outputs/artifacts/`
 
 Operational concerns:
 
@@ -187,8 +222,8 @@ Responsibilities:
 Mounts:
 
 - `data/`
-- `mlruns/`
-- `artifacts/`
+- `outputs/mlruns/`
+- `outputs/artifacts/`
 
 Operational concerns:
 
@@ -206,14 +241,23 @@ Responsibilities:
 Mounts:
 
 - `data/models/`
-- `data/monitoring/`
-- `artifacts/`
+- `outputs/monitoring/`
+- `outputs/artifacts/`
 
 Operational concerns:
 
 - loading promoted model artifacts
 - stable response contracts
 - lightweight online inference
+
+Recommended environment bootstrap order:
+
+1. Install and start Docker Desktop.
+2. Verify `docker --version`, `docker compose version`, and `docker info`.
+3. Create `.env` from `.env.example`.
+4. Run `uv sync`.
+5. Fill in API keys.
+6. Run `docker compose up --build` when container execution is needed.
 
 ---
 
@@ -239,12 +283,17 @@ These schemas should be fixed early because they define the pipeline boundaries.
 
 ### Stage 3 scoring output additions
 
-- `score` as integer `1-10`
+- `score` as an ordinal sentiment-certainty score, initially designed as integer `1-10`
 - `direction` as `bull | bear | neutral`
 - `confidence` as float `0-1`
 - `prediction_horizon` as `1-7d | 7-30d | 30d+ | unspecified`
 - `scoring_model_version`
 - `prompt_version`
+
+Design note:
+
+- a raw `1-10` scale may be too granular for stable LLM behavior
+- the implementation should preserve the raw score for analysis, but also support a derived bucketed feature for modeling, such as 3-level or 5-level certainty bands
 
 ### Stage 4 article label output additions
 
@@ -267,6 +316,13 @@ One row per author or fallback source per evaluation window. Include:
 - average model confidence
 - evaluation-window timestamps
 
+Sparse-entity safeguards:
+
+- apply Bayesian smoothing so authors with one or two articles do not get extreme trust estimates
+- enforce a minimum article threshold before treating author-level metrics as reliable
+- fall back to source-level metrics when author history is missing or too sparse
+- fall back to global default trust when both author and source evidence are insufficient
+
 ### Stage 6 trust value output
 
 - `entity_id`
@@ -274,6 +330,11 @@ One row per author or fallback source per evaluation window. Include:
 - `as_of_date`
 - `trust_value` in `0-1`
 - `trust_model_version`
+
+Trust value construction note:
+
+- trust should be derived from multiple historical windows, not only a single fixed window
+- recommended windows are `3` month, `6` month, and `12` month views with stronger weighting on recent performance
 
 ### Stage 7 daily forecast feature row
 
@@ -351,6 +412,11 @@ Important interpretation:
 - score measures the certainty and strength of the author's view
 - score does not measure correctness
 
+Scoring caution:
+
+- a `1-10` score is useful as a raw research signal, but may be too detailed for stable downstream modeling
+- the implementation should evaluate whether bucketed certainty classes outperform the raw scale in robustness and reproducibility
+
 #### GEPA optimization loop
 
 Before full scoring:
@@ -407,6 +473,8 @@ Recommended reliability logic:
 
 - do not trust raw accuracy alone
 - use Bayesian smoothing or Wilson lower bound
+- require a minimum article threshold before using an author-specific estimate
+- assign a default trust near `0.5` when evidence is too sparse
 - aggregate at author level first
 - fall back to source when author data is missing or sparse
 
@@ -420,7 +488,9 @@ Generate rolling author/source feature vectors and predict future trustworthines
 
 Implementation details:
 
-- use a rolling 6-month history window
+- do not rely on only one rolling window
+- build trust features from short-term `3` month, mid-term `6` month, and long-term `12` month history
+- weight recent performance more strongly than older performance
 - refresh trust values quarterly
 - build features only from information available up to each cutoff date
 - start with `LightGBM` baseline
@@ -430,6 +500,12 @@ Implementation details:
 - assign new entities a default trust near `0.5`
 - update that default incrementally as evidence accumulates
 
+Reasoning:
+
+- a single short window is often too unstable because many authors publish very few articles
+- a single long window can become stale because market regimes shift
+- combining multiple windows balances stability and responsiveness
+
 ### Stage 7: Train the 2022-2026 Price Trend Prediction Model
 
 Repeat Stages 1-4 for `2022-2026`, then use trust-weighted signals to predict BTC direction.
@@ -437,7 +513,7 @@ Repeat Stages 1-4 for `2022-2026`, then use trust-weighted signals to predict BT
 Per-record inputs:
 
 - date
-- sentiment score
+- sentiment score or bucketed sentiment-certainty feature
 - prediction horizon
 - author trust value
 - Bitcoin price on that date
@@ -471,13 +547,17 @@ Evaluation:
 
 ## Data Layer Design
 
-Use the layered storage exactly as follows:
+Use the layered storage and output layout exactly as follows:
 
 - `data/raw/`: raw article JSONL and raw BTC market pulls
 - `data/filtered/`: forward-looking prediction-only article JSONL
 - `data/scored/`: sentiment and horizon enriched article JSONL
 - `data/features/`: Parquet datasets for labels, author stats, trust features, and TFT inputs
 - `data/models/`: trained models, metadata, and inference-ready bundles
+- `outputs/mlruns/`: MLflow experiment tracking data
+- `outputs/artifacts/`: exported reports, plots, and promoted bundles
+- `outputs/logs/`: runtime logs
+- `outputs/monitoring/`: inference and drift monitoring outputs
 
 This structure keeps the pipeline reproducible and easy to debug.
 
@@ -546,10 +626,12 @@ Run a small fixture dataset through:
 - Python version is `>=3.10`
 - `uv` is the only dependency and environment manager
 - `docker compose` is the local orchestration standard
-- stage outputs are stored in layered folders rather than a database for v1
+- stage datasets are stored in layered folders rather than a database for v1
 - JSONL is the canonical format for article-level stages
 - Parquet is the canonical format for analytics and model-ready stages
 - trust is modeled as a smoothed reliability estimate, not raw historical accuracy alone
+- trust uses multiple historical windows, with recent evidence weighted more heavily than older evidence
 - missing or sparse authors fall back to source-level aggregates, then to a global mean
+- raw LLM sentiment scores may be bucketed into a coarser scale if the `1-10` signal is too noisy in practice
 - `unspecified` prediction horizon defaults to `T+7`
 - the repository's previous `README.md` direction is obsolete and replaced by this trust-weighted pipeline design

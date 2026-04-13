@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Environments
+.env
+.venv/
+
+# Local outputs
+outputs/artifacts/*
+!outputs/artifacts/.gitkeep
+outputs/logs/*
+!outputs/logs/.gitkeep
+outputs/mlruns/*
+!outputs/mlruns/.gitkeep
+outputs/monitoring/*
+!outputs/monitoring/.gitkeep
+
+# Data outputs
+data/raw/*
+!data/raw/.gitkeep
+data/filtered/*
+!data/filtered/.gitkeep
+data/scored/*
+!data/scored/.gitkeep
+data/features/*
+!data/features/.gitkeep
+data/models/*
+!data/models/.gitkeep
+data/interim/*
+!data/interim/.gitkeep
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/

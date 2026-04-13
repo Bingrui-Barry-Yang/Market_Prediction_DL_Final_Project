@@ -1,0 +1,17 @@
+fastapi>=0.116.0
+httpx>=0.28.0
+lightgbm>=4.6.0
+mlflow>=3.0.0
+orjson>=3.10.0
+pandas>=2.2.0
+polars>=1.24.0
+pyarrow>=20.0.0
+pydantic>=2.11.0
+pydantic-settings>=2.8.0
+python-dotenv>=1.0.1
+python-multipart>=0.0.20
+simhash>=2.1.2
+streamlit>=1.44.0
+tenacity>=9.0.0
+typer>=0.16.0
+uvicorn[standard]>=0.34.0
