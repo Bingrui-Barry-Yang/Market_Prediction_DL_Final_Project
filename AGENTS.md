@@ -1,10 +1,10 @@
-# Bitcoin News Trust-Weighted Trend Prediction System
+# AGENTS.md
 
-## Overview
+## Project Goal
 
-This project builds a Bitcoin price trend prediction system from Bitcoin-related news articles. The key idea is that not all authors and media sources are equally reliable when making forward-looking Bitcoin claims. Instead of treating every article the same, the system learns a rolling **trust value** for each author or source, then uses **trust-weighted sentiment signals** to predict future Bitcoin direction.
+Build a Bitcoin price trend prediction system based on semantic analysis of Bitcoin-related news articles. The core idea is that different news authors and media sources have varying levels of accuracy when predicting Bitcoin prices. The system should learn a rolling **trust value** for each author or source, then use **trust-weighted sentiment signals** to predict future Bitcoin price direction.
 
-The project uses:
+The entire project uses:
 
 - `Python >= 3.10`
 - `uv` for dependency and environment management
@@ -13,198 +13,33 @@ The project uses:
 - `Streamlit` for visualization
 - `MLflow` for experiment tracking
 
-The pipeline is organized into seven stages and uses a layered storage design:
+The storage flow is:
 
 `raw JSONL -> filtered JSONL -> scored JSONL -> feature Parquet -> model artifacts`
 
 ---
 
-## System Objective
+## Architecture Summary
 
-The system has two learning goals:
+The repository should be implemented as a single Python monorepo with:
 
-1. Learn which authors or media sources tend to make more accurate Bitcoin price predictions over time.
-2. Use those learned trust values to improve downstream Bitcoin trend prediction for the next `7`, `14`, and `30` days.
+- shared business logic in `src/`
+- container-facing application entrypoints in `apps/`
+- reproducible operational runners in `scripts/`
+- layered persisted artifacts in `data/`
 
-This makes the project different from a plain sentiment model. It is not only scoring whether an article sounds bullish or bearish. It is also learning **who is worth trusting**.
+The runtime is split into four containers:
+
+1. `scraper-filter`
+2. `llm-scoring`
+3. `training`
+4. `serving`
+
+This separation keeps scraping, expensive LLM operations, heavy model training, and online serving isolated while still sharing one codebase.
 
 ---
 
-## End-to-End Seven-Stage Pipeline
-
-### Stage 1: Scrape Historical News (2017-2021)
-
-Scrape Bitcoin-related news articles using Google News API and NewsAPI.
-
-Each article is normalized into a JSON record with:
-
-- unique article ID
-- media source
-- author name
-- publication date
-- title
-- body text
-- original URL
-
-Processing rules:
-
-- use `asyncio` for concurrent scraping
-- use `Pydantic` for schema validation
-- remove duplicates with `SimHash`
-- discard articles with no body text
-- keep English-language content only
-- store results as JSONL
-
-Output layer:
-
-- `data/raw/`
-
-### Stage 2: Prediction Content Filter
-
-Before expensive scoring, run a lightweight LLM as a binary filter:
-
-**Does this article contain a prediction about Bitcoin's future price?**
-
-Keep articles with explicit or implied forward-looking price judgment, such as:
-
-- "I believe BTC will rally this week"
-- "on-chain data suggests a bullish outlook"
-- "there is a risk of breaking below support levels"
-
-Discard:
-
-- pure market updates
-- historical recaps
-- technical explainers
-- regulatory summaries without forward-looking price claims
-
-Expected retention:
-
-- roughly `30%` to `50%`
-- target final set of about `8,000` to `15,000` articles
-
-Output layer:
-
-- `data/filtered/`
-
-### Stage 3: LLM Sentiment Scoring + Prediction Horizon Extraction
-
-For every filtered article, call the Gemini API and return structured JSON:
-
-- `score`: integer `1-10`
-- `direction`: `bull | bear | neutral`
-- `confidence`: float `0-1`
-- `prediction_horizon`: `1-7d | 7-30d | 30d+ | unspecified`
-
-Interpretation:
-
-- `1` = extremely confident bearish
-- `10` = extremely confident bullish
-- `5-6` = vague or neutral
-
-The score reflects how certain the author sounds, not whether the author is correct.
-
-#### GEPA prompt optimization
-
-Before full scoring, use GEPA (Reflective Prompt Evolution):
-
-1. Manually annotate `50-100` anchor articles for certainty level.
-2. Run the current prompt on these anchors.
-3. Compute Spearman correlation between prompt output and human labels.
-4. Ask the LLM to reflect on prompt ambiguity.
-5. Generate `3-5` improved prompt candidates.
-6. Re-evaluate and keep the best prompt.
-7. Repeat for `8-15` generations until performance stabilizes.
-
-The best prompt becomes the production scoring prompt.
-
-Output layer:
-
-- `data/scored/`
-
-### Stage 4: Fetch Bitcoin Historical Prices and Align by Prediction Horizon
-
-Download daily Bitcoin data for `2017-2021` from a public API and align each article to a future price outcome based on its declared horizon:
-
-- `1-7d -> T+7`
-- `7-30d -> T+30`
-- `30d+ -> T+90`
-- `unspecified -> T+7`
-
-This creates fair ground-truth labels because short-term and long-term predictions are evaluated on different time windows.
-
-Output layer:
-
-- `data/features/`
-
-### Stage 5: Calculate Per-Author / Per-Source Prediction Success Rate
-
-Compare each article's predicted direction against real Bitcoin movement over the matching horizon.
-
-Compute per author or source:
-
-- historical directional accuracy
-- total article count
-- confidence-adjusted reliability score
-
-Recommended reliability design:
-
-- use Bayesian smoothing or Wilson lower bound instead of raw accuracy alone
-- apply recency weighting
-- fall back from author to source if author data is missing or too sparse
-
-Output:
-
-- author/source statistics table in Parquet
-
-### Stage 6: Train the Trust Value Model
-
-Use a rolling time-window design:
-
-- each training window uses the previous `6` months
-- trust values are refreshed every quarter
-- for new authors, default to global mean trust around `0.5`
-
-Model sequence:
-
-1. `LightGBM` baseline for fast iteration and feature importance
-2. two-layer `LSTM` to model trust evolution over time
-
-Track all experiments with `MLflow`.
-
-Output:
-
-- trust values in range `0-1`
-- model artifacts in `data/models/`
-
-### Stage 7: Train the 2022-2026 Price Trend Prediction Model
-
-Repeat Stages 1-4 on `2022-2026` news data.
-
-Each downstream record includes:
-
-- date
-- sentiment score
-- prediction horizon
-- author trust value
-- Bitcoin price on that date
-
-Aggregate trust-weighted sentiment daily and train a `Temporal Fusion Transformer (TFT)` to predict Bitcoin direction over:
-
-- next `7` days
-- next `14` days
-- next `30` days
-
-Evaluate with:
-
-- walk-forward validation
-- retraining every `30` days
-- directional accuracy
-- Sharpe Ratio from a signal-based trading simulation
-
----
-
-## Commented Directory Structure
+## Full Commented Directory Structure
 
 ```text
 Market_Prediction_DL_Final_Project/                      # Project root; shared Python monorepo for all pipeline stages and services
@@ -289,130 +124,432 @@ Market_Prediction_DL_Final_Project/                      # Project root; shared 
 
 ---
 
-## Docker and Service Architecture
+## Four-Container Docker Design
 
-The project is designed around four main containers managed by `docker compose`.
+### Base image
 
-### 1. `scraper-filter`
+- base on `python:3.10-slim` or newer
+- install `uv`
+- use `uv sync --frozen` to install dependencies
+- keep one shared dependency definition and split optional groups if needed for `training`, `serving`, `llm`, and `dev`
+
+### Container 1: `scraper-filter`
 
 Responsibilities:
 
 - Stage 1 historical scraping
 - Stage 2 prediction-content filtering
 
-Primary inputs and outputs:
+Mounts:
 
-- reads and writes under `data/raw/` and `data/filtered/`
-- uses prompt assets from `prompts/filter/`
+- `data/`
+- `logs/`
+- `prompts/`
 
-### 2. `llm-scoring`
+Operational concerns:
+
+- asynchronous throughput
+- API rate limits
+- checkpointing and resumability
+- article deduplication
+
+### Container 2: `llm-scoring`
 
 Responsibilities:
 
 - GEPA prompt optimization
-- full Gemini batch scoring
+- Gemini batch scoring
 
-Primary inputs and outputs:
+Mounts:
 
-- reads from `data/filtered/`
-- writes to `data/scored/`
-- uses `prompts/scoring/` and `prompts/gepa/`
-- stores optimization artifacts in `experiments/`
+- `data/`
+- `prompts/`
+- `experiments/`
+- `artifacts/`
 
-### 3. `training`
+Operational concerns:
+
+- prompt versioning
+- structured output validation
+- dead-letter handling for malformed responses
+- cost and retry controls
+
+### Container 3: `training`
 
 Responsibilities:
 
-- price alignment
-- author statistics generation
+- Stage 4 through Stage 7 processing
 - trust model training
-- TFT forecasting training
-- MLflow experiment tracking
+- TFT training
+- walk-forward evaluation
+- MLflow logging
 
-Primary inputs and outputs:
+Mounts:
 
-- reads from `data/scored/`
-- writes Parquet features to `data/features/`
-- exports models to `data/models/`
-- logs experiments to `mlruns/`
+- `data/`
+- `mlruns/`
+- `artifacts/`
 
-### 4. `serving`
+Operational concerns:
+
+- parquet feature generation
+- leakage-safe rolling windows
+- experiment reproducibility
+
+### Container 4: `serving`
 
 Responsibilities:
 
-- FastAPI inference endpoints
+- FastAPI inference service
 - Streamlit dashboard
 
-Primary inputs and outputs:
+Mounts:
 
-- loads promoted models from `data/models/`
-- writes monitoring outputs to `data/monitoring/`
+- `data/models/`
+- `data/monitoring/`
+- `artifacts/`
 
-### Shared Docker principles
+Operational concerns:
 
-- use `Python >= 3.10`
-- install dependencies through `uv`
-- keep one shared codebase and separate runtime entrypoints
-- mount data and artifacts as volumes for persistence
-- keep API keys and config in environment variables
-
----
-
-## Data Storage Layers
-
-The project uses a layered storage model so every pipeline stage is reproducible and debuggable.
-
-- `data/raw/`: raw normalized article JSONL and raw BTC price pulls
-- `data/filtered/`: prediction-only article JSONL after Stage 2
-- `data/scored/`: article JSONL after Gemini scoring
-- `data/features/`: Parquet datasets for labels, author stats, trust features, and forecast features
-- `data/models/`: trained models and inference-ready assets
-
-This separation makes it easy to rerun only one stage without rebuilding the full project.
+- loading promoted model artifacts
+- stable response contracts
+- lightweight online inference
 
 ---
 
-## Recommended Execution Order
+## Public Interfaces and Data Contracts
 
-1. Set up `uv`, environment variables, and Docker.
-2. Define schemas, configuration, and path conventions.
+These schemas should be fixed early because they define the pipeline boundaries.
+
+### Stage 1 normalized article record
+
+- `article_id`
+- `source`
+- `author`
+- `published_at`
+- `title`
+- `body`
+- `url`
+
+### Stage 2 filter output additions
+
+- `contains_prediction`
+- `filter_confidence`
+- `filter_model_version`
+
+### Stage 3 scoring output additions
+
+- `score` as integer `1-10`
+- `direction` as `bull | bear | neutral`
+- `confidence` as float `0-1`
+- `prediction_horizon` as `1-7d | 7-30d | 30d+ | unspecified`
+- `scoring_model_version`
+- `prompt_version`
+
+### Stage 4 article label output additions
+
+- `target_date`
+- `horizon_days`
+- `price_t`
+- `price_t_plus_h`
+- `realized_return`
+- `realized_direction`
+
+### Stage 5 author/source statistics table
+
+One row per author or fallback source per evaluation window. Include:
+
+- article count
+- directional accuracy
+- Bayesian-smoothed or Wilson-adjusted accuracy
+- recency-weighted accuracy
+- horizon mix
+- average model confidence
+- evaluation-window timestamps
+
+### Stage 6 trust value output
+
+- `entity_id`
+- `entity_type` as `author | source`
+- `as_of_date`
+- `trust_value` in `0-1`
+- `trust_model_version`
+
+### Stage 7 daily forecast feature row
+
+- `date`
+- trust-weighted sentiment aggregates
+- trust-weighted confidence aggregates
+- article-volume and source-diversity features
+- BTC historical price features
+- labels for next `7d`, `14d`, and `30d` direction
+
+### Serving API
+
+FastAPI should expose:
+
+- trust lookup by author or source
+- latest daily aggregate feature summary
+- forecast outputs for `7`, `14`, and `30` day horizons
+- model metadata and version endpoints
+
+---
+
+## Detailed Stage-by-Stage Implementation Plan
+
+### Stage 1: Scrape Historical News (2017-2021)
+
+Use Google News API and NewsAPI to scrape Bitcoin-related articles.
+
+Implementation details:
+
+- use `asyncio` and `httpx`
+- validate records with `Pydantic`
+- query by time windows to reduce rate-limit pressure
+- normalize each article into the canonical schema
+- remove empty-body records
+- filter non-English records
+- deduplicate near-duplicates with `SimHash`
+- persist normalized JSONL into `data/raw/`
+- keep manifests or checkpoints so reruns can resume cleanly
+
+### Stage 2: Prediction Content Filter
+
+Run a lower-cost LLM to decide whether an article contains a forward-looking Bitcoin price judgment.
+
+Keep:
+
+- explicit price predictions
+- implied bullish or bearish outlooks
+
+Discard:
+
+- pure daily market recaps
+- historical summaries
+- technical explainers
+- policy/regulation reports without a price claim
+
+Implementation details:
+
+- batch requests
+- validate structured responses
+- track keep-rate metrics
+- write passing records to `data/filtered/`
+- retain sample QA outputs for false-positive/false-negative inspection
+
+### Stage 3: LLM Sentiment Scoring + Prediction Horizon Extraction
+
+For every filtered article, call Gemini and produce:
+
+- `score`
+- `direction`
+- `confidence`
+- `prediction_horizon`
+
+Important interpretation:
+
+- score measures the certainty and strength of the author's view
+- score does not measure correctness
+
+#### GEPA optimization loop
+
+Before full scoring:
+
+1. label `50-100` anchor articles manually
+2. run current prompt on anchors
+3. compute Spearman correlation
+4. ask for prompt reflection on ambiguity around certainty vs hedging
+5. generate `3-5` candidate prompts
+6. re-evaluate
+7. keep the best prompt
+8. repeat for `8-15` generations until stable
+
+Implementation details:
+
+- store prompt versions and metrics in `experiments/gepa_runs/`
+- log results to `MLflow`
+- freeze the best prompt for production scoring
+- save scored records into `data/scored/`
+- preserve malformed outputs in a retry or dead-letter path
+
+### Stage 4: Fetch Bitcoin Historical Prices and Align by Prediction Horizon
+
+Download daily BTC data for `2017-2021` and map article predictions to future outcomes.
+
+Horizon mapping:
+
+- `1-7d -> T+7`
+- `7-30d -> T+30`
+- `30d+ -> T+90`
+- `unspecified -> T+7`
+
+Implementation details:
+
+- normalize dates to a consistent standard
+- compute realized return and realized direction
+- join article predictions to future price windows
+- store article-level labeled outputs in `data/features/`
+
+### Stage 5: Calculate Per-Author / Per-Source Prediction Success Rate
+
+Compare each article's predicted direction with actual BTC direction over its aligned horizon.
+
+Compute:
+
+- total prediction count
+- directional accuracy
+- horizon-specific accuracy
+- average LLM confidence
+- recency-weighted hit rate
+- consistency over time
+
+Recommended reliability logic:
+
+- do not trust raw accuracy alone
+- use Bayesian smoothing or Wilson lower bound
+- aggregate at author level first
+- fall back to source when author data is missing or sparse
+
+Output:
+
+- author/source statistics table in Parquet
+
+### Stage 6: Train the Trust Value Model
+
+Generate rolling author/source feature vectors and predict future trustworthiness.
+
+Implementation details:
+
+- use a rolling 6-month history window
+- refresh trust values quarterly
+- build features only from information available up to each cutoff date
+- start with `LightGBM` baseline
+- then train a two-layer `LSTM` over time-window sequences
+- track experiments with `MLflow`
+- emit trust values in `0-1`
+- assign new entities a default trust near `0.5`
+- update that default incrementally as evidence accumulates
+
+### Stage 7: Train the 2022-2026 Price Trend Prediction Model
+
+Repeat Stages 1-4 for `2022-2026`, then use trust-weighted signals to predict BTC direction.
+
+Per-record inputs:
+
+- date
+- sentiment score
+- prediction horizon
+- author trust value
+- Bitcoin price on that date
+
+Daily aggregation details:
+
+- trust-weighted sentiment
+- trust-weighted confidence
+- article counts
+- source diversity
+- BTC market covariates
+
+Model:
+
+- `Temporal Fusion Transformer (TFT)`
+
+Prediction targets:
+
+- next `7` days
+- next `14` days
+- next `30` days
+
+Evaluation:
+
+- walk-forward validation
+- retrain every `30` days
+- directional accuracy
+- Sharpe Ratio from a signal-based trading strategy
+
+---
+
+## Data Layer Design
+
+Use the layered storage exactly as follows:
+
+- `data/raw/`: raw article JSONL and raw BTC market pulls
+- `data/filtered/`: forward-looking prediction-only article JSONL
+- `data/scored/`: sentiment and horizon enriched article JSONL
+- `data/features/`: Parquet datasets for labels, author stats, trust features, and TFT inputs
+- `data/models/`: trained models, metadata, and inference-ready bundles
+
+This structure keeps the pipeline reproducible and easy to debug.
+
+---
+
+## Execution Order
+
+1. Create folder structure and dependency groups.
+2. Define schemas, settings, and path conventions.
 3. Build Stage 1 scraping and normalization.
 4. Build Stage 2 prediction filtering.
-5. Build GEPA and finalize the scoring prompt.
-6. Run full Stage 3 Gemini scoring.
-7. Build Stage 4 price alignment and article labels.
+5. Build GEPA and finalize the Gemini prompt.
+6. Run full Stage 3 scoring.
+7. Build Stage 4 price alignment and label generation.
 8. Build Stage 5 author/source statistics.
 9. Train Stage 6 trust models.
 10. Repeat Stages 1-4 for `2022-2026`.
 11. Build Stage 7 daily aggregates and train the TFT model.
-12. Expose inference via FastAPI.
-13. Add Streamlit dashboard views.
-14. Validate with walk-forward evaluation and promote final model artifacts.
+12. Add FastAPI inference service.
+13. Add Streamlit dashboard.
+14. Run end-to-end validation and promote final model artifacts.
 
 ---
 
-## Core Tech Stack
+## Testing Strategy
 
-- Language: `Python >= 3.10`
-- Dependency management: `uv`
-- Containers: `Docker`, `docker compose`
-- Validation: `Pydantic`
-- HTTP and async ingestion: `httpx`, `asyncio`
-- Tabular processing: `pandas`, `polars`, `pyarrow`
-- Deduplication: `SimHash`
-- LLM scoring: Gemini API
-- Trust baseline: `LightGBM`
-- Sequence trust model: `LSTM`
-- Forecasting model: `Temporal Fusion Transformer`
-- Experiment tracking: `MLflow`
-- Inference API: `FastAPI`
-- Dashboard: `Streamlit`
-- Testing: `pytest`
+### Unit tests
+
+- schema validation
+- SimHash deduplication logic
+- horizon mapping logic
+- metric calculations
+- trust-value postprocessing
+
+### Integration tests
+
+- Stage 1 through Stage 4 data flow with fixtures
+- mocked news APIs
+- mocked LLM filter and Gemini responses
+- storage boundary checks between JSONL and Parquet stages
+
+### Golden tests
+
+- parsing of structured LLM outputs
+- regression checks for prompt output shape and normalization
+
+### End-to-end smoke test
+
+Run a small fixture dataset through:
+
+`raw -> filtered -> scored -> labeled -> trust -> forecast`
+
+### Validation rules
+
+- no duplicate `article_id`
+- no empty article bodies after cleaning
+- only allowed horizon labels
+- no future leakage in rolling trust features
+- strictly time-ordered walk-forward splits
+- serving API returns stable response shapes
 
 ---
 
-## Notes
+## Assumptions and Defaults
 
-- `README.md` is the readable project overview.
-- `AGENTS.md` is the fuller implementation specification for engineers or coding agents.
-- The existing older project framing has been replaced by the trust-weighted news prediction pipeline described above.
+- Python version is `>=3.10`
+- `uv` is the only dependency and environment manager
+- `docker compose` is the local orchestration standard
+- stage outputs are stored in layered folders rather than a database for v1
+- JSONL is the canonical format for article-level stages
+- Parquet is the canonical format for analytics and model-ready stages
+- trust is modeled as a smoothed reliability estimate, not raw historical accuracy alone
+- missing or sparse authors fall back to source-level aggregates, then to a global mean
+- `unspecified` prediction horizon defaults to `T+7`
+- the repository's previous `README.md` direction is obsolete and replaced by this trust-weighted pipeline design
