@@ -35,7 +35,7 @@ from gepa.adapters.default_adapter.default_adapter import (
 )
 
 # --- Configuration ---
-GEPA_RESULT_PATH = "gepa_result.json"
+GEPA_RESULT_PATH = "outputs/gepa_runs/gepa_result.json"
 TASK_LM          = "gemini/gemini-1.5-flash"
 REFLECTION_LM    = "gemini/gemini-1.5-pro"
 MAX_METRIC_CALLS = 150
