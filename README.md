@@ -20,11 +20,11 @@ The dataset starts with 30 manually curated Bitcoin price prediction articles. E
 
 These 30 records are used for GEPA-based prompt optimization. The optimized prompt is then evaluated on a separate unseen test set of 35-40 articles with the same annotation format.
 
-The model comparison stage is designed around pluggable LLM adapters. Initial target models include:
+The current GEPA runner uses Gemini through LiteLLM. The default task and reflection model are both:
 
-- Qwen
-- Kimi
-- GPT-OSS 120B, also referred to in project notes as a GPT-OSS/gpt055-equivalent model
+- `gemini/gemini-2.5-flash-lite`
+
+The broader project can still compare other models later, such as Qwen, Kimi, and GPT-OSS 120B, through provider-specific adapters or GEPA model arguments.
 
 ## Pipeline
 
@@ -35,6 +35,7 @@ Use the 30 curated training articles to optimize prompts for structured informat
 Expected inputs:
 
 - `data/train/articles.jsonl`
+- `data/train/articles_with_text.jsonl` for GEPA runs that include scraped article body text
 - prompt templates under `src/prompts/` or future prompt asset files
 
 Expected outputs:
@@ -171,6 +172,18 @@ Market_Prediction_DL_Final_Project/
 
 The project uses Python `>=3.10.19`, `uv`, and Docker.
 
+Create `.env` from the example file:
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and set:
+
+```bash
+GEMINI_API_KEY=your_real_gemini_api_key_here
+```
+
 Create or refresh the local scaffold:
 
 ```bash
@@ -186,21 +199,62 @@ uv sync
 Run tests:
 
 ```bash
-uv run pytest
+uv run python -m pytest
+uv run python -m ruff check .
 ```
 
-Run the research container:
+Build the Docker research container:
 
 ```bash
-docker compose run --rm research
+docker compose build research
 ```
 
 ## Common Commands
 
-Run the GEPA optimization skeleton:
+Convert the human gold-standard worksheet to JSONL:
 
 ```bash
-uv run python scripts/run_gepa.py
+uv run python scripts/convert_gold_standard_xlsx.py
+```
+
+Scrape article body text into a separate JSONL so the original labels file stays unchanged:
+
+```bash
+uv run python scripts/scrape_article_text.py
+```
+
+Run a local GEPA dry run with the enriched JSONL:
+
+```bash
+uv run python scripts/run_gepa.py --dry-run data/train/articles_with_text.jsonl
+```
+
+Run a Docker GEPA dry run:
+
+```bash
+docker compose run --rm research uv run python scripts/run_gepa.py \
+  --dry-run \
+  data/train/articles_with_text.jsonl
+```
+
+Run a Docker GEPA smoke test with budget `1`:
+
+```bash
+docker compose run --rm research uv run python scripts/run_gepa.py \
+  --budget 1 \
+  --output outputs/gepa_runs/bitcoin_sentiment/smoke_result_001.json \
+  --run-dir outputs/gepa_runs/bitcoin_sentiment/smoke_run_001 \
+  data/train/articles_with_text.jsonl
+```
+
+Run a larger GEPA optimization after the smoke test succeeds:
+
+```bash
+docker compose run --rm research uv run python scripts/run_gepa.py \
+  --budget 20 \
+  --output outputs/gepa_runs/bitcoin_sentiment/result_budget20.json \
+  --run-dir outputs/gepa_runs/bitcoin_sentiment/run_budget20 \
+  data/train/articles_with_text.jsonl
 ```
 
 Run test evaluation:
@@ -224,5 +278,6 @@ uv run python scripts/run_final_analysis.py
 ## Notes
 
 - This repository no longer follows the old trust-weighted trading pipeline.
-- The project does not require FastAPI, Streamlit, TFT modeling, author trust modeling, or live article scraping.
+- The project does not require FastAPI, Streamlit, TFT modeling, or author trust modeling.
 - The first implementation target is a reproducible research workflow with clean schemas, prompt versioning, model adapters, and metrics.
+- Keep `.env` private. Commit `.env.example`, not `.env`.

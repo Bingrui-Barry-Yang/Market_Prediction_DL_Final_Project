@@ -22,7 +22,7 @@ Score scale (1-15):
 
 Usage:
     export GEMINI_API_KEY=...
-    python scripts/run_gepa.py --data data/train/articles.jsonl
+    python scripts/run_gepa.py data/train/articles_with_text.jsonl
 """
 
 import argparse
@@ -38,9 +38,10 @@ import gepa
 
 # --- Configuration ---
 GEPA_RESULT_PATH = "outputs/gepa_runs/gepa_result.json"
+GEPA_RUN_DIR = "outputs/gepa_runs/bitcoin_sentiment"
 DATA_PATH = "data/train/articles.jsonl"
-TASK_LM = "gemini/gemini-1.5-flash"
-REFLECTION_LM = "gemini/gemini-1.5-pro"
+TASK_LM = "gemini/gemini-2.5-flash-lite"
+REFLECTION_LM = "gemini/gemini-2.5-flash-lite"
 MAX_METRIC_CALLS = 150
 
 SEED_PROMPT = """You are a Bitcoin sentiment analyst. Score the forward-looking \
@@ -159,9 +160,6 @@ def load_jsonl(data_path: str) -> tuple[list[DefaultDataInst], list[DefaultDataI
             "answer": str(int(gold_score)),
             "additional_context": {
                 "gold_reasoning": gold_reasoning,
-                "source": row.get("source", ""),
-                "date": row.get("date", ""),
-                "article_id": article_id,
             },
         }
 
@@ -187,7 +185,8 @@ def main():
         description="Run GEPA to optimize the Bitcoin sentiment system prompt."
     )
     parser.add_argument(
-        "--data",
+        "data",
+        nargs="?",
         default=DATA_PATH,
         help=f"Input JSONL path (default: {DATA_PATH})",
     )
@@ -197,10 +196,25 @@ def main():
         help=f"Output path for result JSON (default: {GEPA_RESULT_PATH})",
     )
     parser.add_argument(
+        "--run-dir",
+        default=GEPA_RUN_DIR,
+        help=f"GEPA run directory (default: {GEPA_RUN_DIR})",
+    )
+    parser.add_argument(
         "--budget",
         type=int,
         default=MAX_METRIC_CALLS,
         help=f"Max rollout budget (default: {MAX_METRIC_CALLS})",
+    )
+    parser.add_argument(
+        "--task-lm",
+        default=TASK_LM,
+        help=f"Task model passed to GEPA/LiteLLM (default: {TASK_LM})",
+    )
+    parser.add_argument(
+        "--reflection-lm",
+        default=REFLECTION_LM,
+        help=f"Reflection model passed to GEPA/LiteLLM (default: {REFLECTION_LM})",
     )
     parser.add_argument(
         "--dry-run",
@@ -220,29 +234,30 @@ def main():
         return
 
     print(f"[INFO] Starting GEPA optimization (budget={args.budget})...")
-    print(f"[INFO] Task LM:       {TASK_LM}")
-    print(f"[INFO] Reflection LM: {REFLECTION_LM}\n")
+    print(f"[INFO] Task LM:       {args.task_lm}")
+    print(f"[INFO] Reflection LM: {args.reflection_lm}\n")
 
     result = gepa.optimize(
         seed_candidate={"system_prompt": SEED_PROMPT},
         trainset=trainset,
         valset=valset,
-        task_lm=TASK_LM,
+        task_lm=args.task_lm,
         evaluator=SentimentScoreEvaluator(),
-        reflection_lm=REFLECTION_LM,
+        reflection_lm=args.reflection_lm,
         max_metric_calls=args.budget,
-        run_dir="outputs/gepa_runs/bitcoin_sentiment",
+        run_dir=args.run_dir,
     )
 
     best_prompt = result.best_candidate["system_prompt"]
 
     output = {
         "best_candidate": {"system_prompt": best_prompt},
-        "task_lm":        TASK_LM,
-        "reflection_lm":  REFLECTION_LM,
+        "task_lm":        args.task_lm,
+        "reflection_lm":  args.reflection_lm,
         "budget":         args.budget,
         "train_size":     len(trainset),
         "val_size":       len(valset),
+        "run_dir":        args.run_dir,
     }
 
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)

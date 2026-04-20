@@ -11,6 +11,8 @@ __pycache__/
 .venv/
 
 # Generated outputs
+outputs/artifacts/*
+!outputs/artifacts/.gitkeep
 outputs/gepa_runs/*
 !outputs/gepa_runs/.gitkeep
 outputs/evaluations/*
@@ -20,17 +22,23 @@ outputs/validation/*
 outputs/reports/*
 !outputs/reports/.gitkeep
 
-# Local/manual data
+# Data
 data/train/*
 !data/train/.gitkeep
 !data/train/*.jsonl
 !data/train/*.xlsx
 data/test/*
 !data/test/.gitkeep
+!data/test/*.jsonl
+!data/test/*.xlsx
 data/validation/*
 !data/validation/.gitkeep
+!data/validation/*.jsonl
+!data/validation/*.xlsx
 data/external/*
 !data/external/.gitkeep
+!data/external/*.jsonl
+!data/external/*.xlsx
 
 # Editors and OS
 .DS_Store
