@@ -4,34 +4,31 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+*.egg-info/
 
 # Environments
 .env
 .venv/
 
-# Local outputs
-outputs/artifacts/*
-!outputs/artifacts/.gitkeep
-outputs/logs/*
-!outputs/logs/.gitkeep
-outputs/mlruns/*
-!outputs/mlruns/.gitkeep
-outputs/monitoring/*
-!outputs/monitoring/.gitkeep
+# Generated outputs
+outputs/gepa_runs/*
+!outputs/gepa_runs/.gitkeep
+outputs/evaluations/*
+!outputs/evaluations/.gitkeep
+outputs/validation/*
+!outputs/validation/.gitkeep
+outputs/reports/*
+!outputs/reports/.gitkeep
 
-# Data outputs
-data/raw/*
-!data/raw/.gitkeep
-data/filtered/*
-!data/filtered/.gitkeep
-data/scored/*
-!data/scored/.gitkeep
-data/features/*
-!data/features/.gitkeep
-data/models/*
-!data/models/.gitkeep
-data/interim/*
-!data/interim/.gitkeep
+# Local/manual data
+data/train/*
+!data/train/.gitkeep
+data/test/*
+!data/test/.gitkeep
+data/validation/*
+!data/validation/.gitkeep
+data/external/*
+!data/external/.gitkeep
 
 # Editors and OS
 .DS_Store

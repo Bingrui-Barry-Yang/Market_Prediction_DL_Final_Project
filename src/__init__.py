@@ -1,1 +1,1 @@
-"""Shared source package for the market prediction project."""
+"""Bitcoin news prompt optimization package."""

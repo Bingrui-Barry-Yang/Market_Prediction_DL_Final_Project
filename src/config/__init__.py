@@ -1,1 +1,1 @@
-"""Configuration helpers."""
+"""Runtime configuration."""

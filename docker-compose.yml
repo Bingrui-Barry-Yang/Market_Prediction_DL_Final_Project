@@ -1,51 +1,12 @@
 services:
-  scraper-filter:
+  research:
     build:
       context: .
-      dockerfile: docker/scraper_filter/Dockerfile
-    container_name: market-prediction-scraper-filter
+      dockerfile: docker/research/Dockerfile
+    container_name: bitcoin-prompt-research
     env_file:
-      - infra/env/.env.example
+      - .env
     volumes:
       - .:/app
     working_dir: /app
-    command: ["uv", "run", "python", "-m", "apps.scraper_filter.main"]
-
-  llm-scoring:
-    build:
-      context: .
-      dockerfile: docker/llm_scoring/Dockerfile
-    container_name: market-prediction-llm-scoring
-    env_file:
-      - infra/env/.env.example
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: ["uv", "run", "python", "-m", "apps.llm_scoring.main"]
-
-  training:
-    build:
-      context: .
-      dockerfile: docker/training/Dockerfile
-    container_name: market-prediction-training
-    env_file:
-      - infra/env/.env.example
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: ["uv", "run", "python", "-m", "apps.training.main"]
-
-  serving:
-    build:
-      context: .
-      dockerfile: docker/serving/Dockerfile
-    container_name: market-prediction-serving
-    env_file:
-      - infra/env/.env.example
-    volumes:
-      - .:/app
-    working_dir: /app
-    ports:
-      - "8000:8000"
-      - "8501:8501"
-    command: ["bash", "scripts/deploy/start_serving.sh"]
+    command: ["uv", "run", "python", "scripts/run_final_analysis.py"]

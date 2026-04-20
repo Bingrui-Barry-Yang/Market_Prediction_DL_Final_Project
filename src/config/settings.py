@@ -1,27 +1,39 @@
 from functools import lru_cache
+from pathlib import Path
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     app_env: str = Field(default="development", alias="APP_ENV")
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
-    host: str = Field(default="0.0.0.0", alias="HOST")
-    fastapi_port: int = Field(default=8000, alias="FASTAPI_PORT")
-    streamlit_port: int = Field(default=8501, alias="STREAMLIT_PORT")
-    google_news_api_key: str = Field(default="replace-me", alias="GOOGLE_NEWS_API_KEY")
-    newsapi_api_key: str = Field(default="replace-me", alias="NEWSAPI_API_KEY")
-    gemini_api_key: str = Field(default="replace-me", alias="GEMINI_API_KEY")
-    btc_price_api_url: str = Field(
-        default="https://api.coingecko.com/api/v3",
-        alias="BTC_PRICE_API_URL",
+
+    train_articles_path: Path = Field(
+        default=Path("data/train/articles.jsonl"),
+        alias="TRAIN_ARTICLES_PATH",
     )
-    mlflow_tracking_uri: str = Field(
-        default="file:/app/outputs/mlruns",
-        alias="MLFLOW_TRACKING_URI",
+    test_articles_path: Path = Field(
+        default=Path("data/test/articles.jsonl"),
+        alias="TEST_ARTICLES_PATH",
     )
-    default_trust_value: float = Field(default=0.5, alias="DEFAULT_TRUST_VALUE")
+    validation_articles_path: Path = Field(
+        default=Path("data/validation/articles.jsonl"),
+        alias="VALIDATION_ARTICLES_PATH",
+    )
+    outputs_dir: Path = Field(default=Path("outputs"), alias="OUTPUTS_DIR")
+    default_prompt_version: str = Field(default="prompt-v001", alias="DEFAULT_PROMPT_VERSION")
+    default_model_names: list[str] = Field(
+        default_factory=lambda: ["qwen", "kimi", "gpt-oss-120b"],
+        alias="DEFAULT_MODEL_NAMES",
+    )
+
+    qwen_api_base_url: str = Field(default="", alias="QWEN_API_BASE_URL")
+    qwen_api_key: str = Field(default="", alias="QWEN_API_KEY")
+    kimi_api_base_url: str = Field(default="", alias="KIMI_API_BASE_URL")
+    kimi_api_key: str = Field(default="", alias="KIMI_API_KEY")
+    gpt_oss_api_base_url: str = Field(default="", alias="GPT_OSS_API_BASE_URL")
+    gpt_oss_api_key: str = Field(default="", alias="GPT_OSS_API_KEY")
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -29,6 +41,13 @@ class Settings(BaseSettings):
         case_sensitive=False,
         extra="ignore",
     )
+
+    @field_validator("default_model_names", mode="before")
+    @classmethod
+    def split_model_names(cls, value: object) -> object:
+        if isinstance(value, str):
+            return [item.strip() for item in value.split(",") if item.strip()]
+        return value
 
 
 @lru_cache(maxsize=1)

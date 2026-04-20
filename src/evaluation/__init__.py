@@ -1,1 +1,1 @@
-"""Evaluation components."""
+"""Evaluation metrics."""
