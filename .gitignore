@@ -23,6 +23,8 @@ outputs/reports/*
 # Local/manual data
 data/train/*
 !data/train/.gitkeep
+!data/train/*.jsonl
+!data/train/*.xlsx
 data/test/*
 !data/test/.gitkeep
 data/validation/*
