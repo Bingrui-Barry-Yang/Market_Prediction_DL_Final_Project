@@ -22,23 +22,25 @@ Score scale (1-15):
 
 Usage:
     export GEMINI_API_KEY=...
-    python scripts/run_gepa.py --data data/gold_standard.jsonl
+    python scripts/run_gepa.py --data data/train/articles.jsonl
 """
 
 import argparse
 import json
+from pathlib import Path
 
-import gepa
 from gepa.adapters.default_adapter.default_adapter import (
     DefaultDataInst,
     EvaluationResult,
 )
 
+import gepa
+
 # --- Configuration ---
 GEPA_RESULT_PATH = "outputs/gepa_runs/gepa_result.json"
-DATA_PATH        = "data/train/gold_standard.jsonl"
-TASK_LM          = "gemini/gemini-1.5-flash"
-REFLECTION_LM    = "gemini/gemini-1.5-pro"
+DATA_PATH = "data/train/articles.jsonl"
+TASK_LM = "gemini/gemini-1.5-flash"
+REFLECTION_LM = "gemini/gemini-1.5-pro"
 MAX_METRIC_CALLS = 150
 
 SEED_PROMPT = """You are a Bitcoin sentiment analyst. Score the forward-looking \
@@ -56,9 +58,9 @@ and anything describing what already happened.
 Respond with only: {"score": <integer 1-15>}"""
 
 SCORE_LABELS = {
-    **{s:    f"Bearish  (confidence {s})"    for s in range(1,  6)},
-    **{s:    f"Neutral  (confidence {s-5})"  for s in range(6,  11)},
-    **{s:    f"Bullish  (confidence {s-10})" for s in range(11, 16)},
+    **{s: f"Bearish  (confidence {s})" for s in range(1, 6)},
+    **{s: f"Neutral  (confidence {s - 5})" for s in range(6, 11)},
+    **{s: f"Bullish  (confidence {s - 10})" for s in range(11, 16)},
 }
 
 
@@ -97,7 +99,10 @@ class SentimentScoreEvaluator:
         if predicted == expected:
             return EvaluationResult(
                 score=1.0,
-                feedback=f"Correct. Score {predicted} ({SCORE_LABELS[predicted]}) matches gold standard.",
+                feedback=(
+                    f"Correct. Score {predicted} ({SCORE_LABELS[predicted]}) "
+                    "matches gold standard."
+                ),
             )
 
         diff = abs(predicted - expected)
@@ -116,6 +121,16 @@ class SentimentScoreEvaluator:
         return EvaluationResult(score=partial, feedback=feedback)
 
 
+def build_article_input(row: dict[str, object]) -> str:
+    title = str(row.get("title", "")).strip()
+    text = str(row.get("text", "")).strip()
+    if title and text:
+        return f"Title: {title}\n\nArticle text:\n{text}"
+    if title:
+        return f"Title: {title}"
+    return text
+
+
 # --- Data Loading ---
 
 def load_jsonl(data_path: str) -> tuple[list[DefaultDataInst], list[DefaultDataInst]]:
@@ -124,28 +139,29 @@ def load_jsonl(data_path: str) -> tuple[list[DefaultDataInst], list[DefaultDataI
     Every 5th row (0-indexed) goes to val, the rest to train (~80/20).
     """
     trainset: list[DefaultDataInst] = []
-    valset:   list[DefaultDataInst] = []
+    valset: list[DefaultDataInst] = []
 
-    with open(data_path, "r", encoding="utf-8") as f:
+    with open(data_path, encoding="utf-8") as f:
         rows = [json.loads(line) for line in f if line.strip()]
 
     for i, row in enumerate(rows):
-        gold_score     = row.get("gold_score")
+        gold_score = row.get("gold_score")
         gold_reasoning = row.get("gold_reasoning", "").strip()
-        title          = row.get("title", "").strip()
-        source         = row.get("source", "").strip()
-        date           = row.get("date", "").strip()
-        article_id     = row.get("article_id", "").strip()
+        article_id = row.get("article_id", "").strip()
 
         if gold_score is None or not gold_reasoning:
-            print(f"[WARN] Skipping {article_id or f'row {i+1}'}: missing gold_score or gold_reasoning.")
+            row_label = article_id or f"row {i + 1}"
+            print(f"[WARN] Skipping {row_label}: missing gold_score or gold_reasoning.")
             continue
 
         instance: DefaultDataInst = {
-            "input":  row.get("text", "").strip(),
+            "input": build_article_input(row),
             "answer": str(int(gold_score)),
             "additional_context": {
                 "gold_reasoning": gold_reasoning,
+                "source": row.get("source", ""),
+                "date": row.get("date", ""),
+                "article_id": article_id,
             },
         }
 
@@ -155,7 +171,7 @@ def load_jsonl(data_path: str) -> tuple[list[DefaultDataInst], list[DefaultDataI
             trainset.append(instance)
 
     print(f"[INFO] Loaded {len(trainset)} train, {len(valset)} val examples.")
-    print(f"[INFO] Score distribution:")
+    print("[INFO] Score distribution:")
     all_scores = [int(inst["answer"]) for inst in trainset + valset]
     for s in sorted(set(all_scores)):
         print(f"         {s:>2} ({SCORE_LABELS[s]}): {all_scores.count(s)}")
@@ -170,16 +186,38 @@ def main():
     parser = argparse.ArgumentParser(
         description="Run GEPA to optimize the Bitcoin sentiment system prompt."
     )
-    parser.add_argument("--output", default=GEPA_RESULT_PATH, help=f"Output path for result JSON (default: {GEPA_RESULT_PATH})")
-    parser.add_argument("--budget", type=int, default=MAX_METRIC_CALLS, help=f"Max rollout budget (default: {MAX_METRIC_CALLS})")
+    parser.add_argument(
+        "--data",
+        default=DATA_PATH,
+        help=f"Input JSONL path (default: {DATA_PATH})",
+    )
+    parser.add_argument(
+        "--output",
+        default=GEPA_RESULT_PATH,
+        help=f"Output path for result JSON (default: {GEPA_RESULT_PATH})",
+    )
+    parser.add_argument(
+        "--budget",
+        type=int,
+        default=MAX_METRIC_CALLS,
+        help=f"Max rollout budget (default: {MAX_METRIC_CALLS})",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Load and validate data without calling GEPA or any model API.",
+    )
     args = parser.parse_args()
 
-    trainset, valset = load_jsonl(DATA_PATH)
+    trainset, valset = load_jsonl(args.data)
 
     if len(trainset) < 5:
         raise ValueError(f"Need at least 5 training examples, got {len(trainset)}.")
     if len(valset) < 2:
         raise ValueError(f"Need at least 2 validation examples, got {len(valset)}.")
+    if args.dry_run:
+        print("[INFO] Dry run complete. GEPA optimization was not started.")
+        return
 
     print(f"[INFO] Starting GEPA optimization (budget={args.budget})...")
     print(f"[INFO] Task LM:       {TASK_LM}")
@@ -207,7 +245,8 @@ def main():
         "val_size":       len(valset),
     }
 
-    with open(args.output, "w") as f:
+    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+    with open(args.output, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2)
 
     print(f"\n[INFO] Done. Best prompt saved to '{args.output}'.")
