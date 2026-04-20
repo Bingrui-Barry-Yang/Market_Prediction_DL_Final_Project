@@ -9,10 +9,17 @@ Return JSON with:
 
 Article source: {source}
 Article date: {date}
+Article title:
+{title}
 Article text:
 {text}
 """
 
 
 def render_extraction_prompt(article: ArticleRecord, template: str = BASE_EXTRACTION_PROMPT) -> str:
-    return template.format(source=article.source, date=article.date, text=article.text)
+    return template.format(
+        source=article.source,
+        date=article.date,
+        title=article.title,
+        text=article.text,
+    )

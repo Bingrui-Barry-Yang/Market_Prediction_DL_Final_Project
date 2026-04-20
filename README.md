@@ -11,11 +11,11 @@ This project studies whether GEPA-based prompt optimization can improve how larg
 The dataset starts with 30 manually curated Bitcoin price prediction articles. Each article includes:
 
 - full article text
+- title
 - URL
 - news source
 - date with month-level granularity
-- annotated predicted direction, such as `up`, `down`, or `neutral`
-- annotated author confidence
+- human-annotated direction and confidence, mapped together into one `gold_score`
 - a short sentence describing the prediction reasoning
 
 These 30 records are used for GEPA-based prompt optimization. The optimized prompt is then evaluated on a separate unseen test set of 35-40 articles with the same annotation format.
@@ -111,23 +111,23 @@ JSONL is the canonical dataset format. Each line in `data/train/articles.jsonl` 
 ```json
 {
   "article_id": "article-001",
-  "text": "Full article text...",
+  "text": "",
+  "title": "Bitcoin price prediction article title",
   "url": "https://example.com/article",
   "source": "Example News",
   "date": "2024-03",
-  "gold_direction": "up",
-  "gold_confidence": "high",
+  "gold_score": 15,
   "gold_reasoning": "The article argues that institutional demand will push BTC higher."
 }
 ```
 
-Allowed direction labels are:
+The `text` field is reserved for full article text and may be blank when only the worksheet title is available.
 
-- `up`
-- `down`
-- `neutral`
+Human annotations include both direction and confidence. The JSONL stores these together as one `gold_score`:
 
-Confidence can be represented as `low`, `medium`, or `high` for the first implementation. Numeric confidence can be added later if the annotations require it.
+- direction `-1` with confidence `1-5` maps to final scores `1-5`
+- direction `0` with confidence `1-5` maps to final scores `6-10`, so confidence `1` gives score `6`
+- direction `1` with confidence `1-5` maps to final scores `11-15`
 
 ## Repository Structure
 

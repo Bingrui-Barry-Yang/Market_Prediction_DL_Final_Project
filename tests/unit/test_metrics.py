@@ -6,22 +6,22 @@ def test_direction_metrics() -> None:
     articles = [
         ArticleRecord(
             article_id="article-001",
-            text="Bitcoin should rise.",
+            text="",
+            title="Bitcoin should rise",
             url="https://example.com/a1",
             source="Example News",
             date="2024-03",
-            gold_direction="up",
-            gold_confidence="high",
+            gold_score=15,
             gold_reasoning="Demand is expected to increase.",
         ),
         ArticleRecord(
             article_id="article-002",
-            text="Bitcoin should fall.",
+            text="",
+            title="Bitcoin should fall",
             url="https://example.com/a2",
             source="Example News",
             date="2024-04",
-            gold_direction="down",
-            gold_confidence="medium",
+            gold_score=3,
             gold_reasoning="The author expects risk-off selling.",
         ),
     ]

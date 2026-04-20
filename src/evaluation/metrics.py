@@ -1,10 +1,22 @@
 from collections import Counter
 
-from src.data.schemas import ArticleRecord, ExtractionRecord, ParseStatus
+from src.data.schemas import ArticleRecord, Direction, ExtractionRecord, ParseStatus
+
+
+def direction_from_gold_score(score: int) -> Direction:
+    if 1 <= score <= 5:
+        return Direction.down
+    if 6 <= score <= 10:
+        return Direction.neutral
+    if 11 <= score <= 15:
+        return Direction.up
+    raise ValueError(f"gold_score must be in 1-15, got {score}")
 
 
 def direction_accuracy(articles: list[ArticleRecord], extractions: list[ExtractionRecord]) -> float:
-    gold_by_id = {article.article_id: article.gold_direction for article in articles}
+    gold_by_id = {
+        article.article_id: direction_from_gold_score(article.gold_score) for article in articles
+    }
     comparable = [
         extraction
         for extraction in extractions
@@ -26,8 +38,13 @@ def parse_failure_rate(extractions: list[ExtractionRecord]) -> float:
 
 
 def macro_f1_direction(articles: list[ArticleRecord], extractions: list[ExtractionRecord]) -> float:
-    gold_by_id = {article.article_id: article.gold_direction for article in articles}
-    labels = sorted({article.gold_direction for article in articles}, key=str)
+    gold_by_id = {
+        article.article_id: direction_from_gold_score(article.gold_score) for article in articles
+    }
+    labels = sorted(
+        {direction_from_gold_score(article.gold_score) for article in articles},
+        key=str,
+    )
     predictions = [
         (gold_by_id[extraction.article_id], extraction.pred_direction)
         for extraction in extractions

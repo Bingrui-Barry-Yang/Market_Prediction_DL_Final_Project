@@ -32,7 +32,7 @@ Input:
 
 - `data/train/articles.jsonl`
 
-Each article contains full text, URL, source, month-level date, gold direction, gold confidence, and gold reasoning.
+Each article contains reserved full text, title, URL, source, month-level date, one integrated `gold_score`, and gold reasoning.
 
 Output:
 
@@ -91,27 +91,25 @@ Canonical article records are JSONL objects:
 ```json
 {
   "article_id": "article-001",
-  "text": "Full article text...",
+  "text": "",
+  "title": "Bitcoin price prediction article title",
   "url": "https://example.com/article",
   "source": "Example News",
   "date": "2024-03",
-  "gold_direction": "up",
-  "gold_confidence": "high",
+  "gold_score": 15,
   "gold_reasoning": "The article argues that institutional demand will push BTC higher."
 }
 ```
 
-Allowed direction labels:
+The `text` field is reserved for full article text and may be blank while the curated worksheet only provides titles.
 
-- `up`
-- `down`
-- `neutral`
+Human annotations include both direction and confidence, but the canonical JSONL maps those two fields together into one `gold_score`:
 
-Initial allowed confidence labels:
+- direction `-1` with confidence `1-5` maps to scores `1-5`
+- direction `0` with confidence `1-5` maps to scores `6-10`, so confidence `1` gives score `6`
+- direction `1` with confidence `1-5` maps to scores `11-15`
 
-- `low`
-- `medium`
-- `high`
+Do not emit separate `gold_direction` or `gold_confidence` fields in the converted JSONL.
 
 Canonical extraction records should include:
 

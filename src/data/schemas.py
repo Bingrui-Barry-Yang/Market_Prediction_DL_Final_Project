@@ -24,12 +24,12 @@ class ArticleRecord(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     article_id: str = Field(min_length=1)
-    text: str = Field(min_length=1)
+    text: str = ""
+    title: str = Field(min_length=1)
     url: HttpUrl
     source: str = Field(min_length=1)
     date: str = Field(min_length=4)
-    gold_direction: Direction
-    gold_confidence: Confidence
+    gold_score: int = Field(ge=1, le=15)
     gold_reasoning: str = Field(min_length=1)
 
 
