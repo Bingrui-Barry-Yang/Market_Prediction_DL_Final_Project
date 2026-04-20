@@ -22,7 +22,7 @@ Score scale (1-15):
 
 Usage:
     export GEMINI_API_KEY=...
-    python scripts/run_gepa.py --data data/gold_standard.json
+    python scripts/run_gepa.py --data data/gold_standard.jsonl
 """
 
 import argparse
