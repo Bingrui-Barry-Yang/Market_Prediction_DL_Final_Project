@@ -36,6 +36,7 @@ from gepa.adapters.default_adapter.default_adapter import (
 
 # --- Configuration ---
 GEPA_RESULT_PATH = "outputs/gepa_runs/gepa_result.json"
+DATA_PATH        = "data/train/gold_standard.jsonl"
 TASK_LM          = "gemini/gemini-1.5-flash"
 REFLECTION_LM    = "gemini/gemini-1.5-pro"
 MAX_METRIC_CALLS = 150
@@ -169,12 +170,11 @@ def main():
     parser = argparse.ArgumentParser(
         description="Run GEPA to optimize the Bitcoin sentiment system prompt."
     )
-    parser.add_argument("--data",   required=True,            help="Path to gold standard JSONL file")
     parser.add_argument("--output", default=GEPA_RESULT_PATH, help=f"Output path for result JSON (default: {GEPA_RESULT_PATH})")
     parser.add_argument("--budget", type=int, default=MAX_METRIC_CALLS, help=f"Max rollout budget (default: {MAX_METRIC_CALLS})")
     args = parser.parse_args()
 
-    trainset, valset = load_jsonl(args.data)
+    trainset, valset = load_jsonl(DATA_PATH)
 
     if len(trainset) < 5:
         raise ValueError(f"Need at least 5 training examples, got {len(trainset)}.")
@@ -193,7 +193,7 @@ def main():
         evaluator=SentimentScoreEvaluator(),
         reflection_lm=REFLECTION_LM,
         max_metric_calls=args.budget,
-        run_dir="gepa_runs/bitcoin_sentiment",
+        run_dir="outputs/gepa_runs/bitcoin_sentiment",
     )
 
     best_prompt = result.best_candidate["system_prompt"]
