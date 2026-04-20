@@ -86,7 +86,7 @@ def row_to_article(record: dict[str, str], index: int) -> ArticleRecord:
 
     return ArticleRecord(
         article_id=f"btc-gepa-train-{index:03d}",
-        text="",
+        text=record["text"].strip(),
         title=title,
         url=record["url"].strip(),
         source=record["source"].strip(),
@@ -102,7 +102,16 @@ def convert_xlsx_to_jsonl(input_path: Path, output_path: Path) -> int:
         raise ValueError(f"No rows found in {input_path}")
 
     headers = [header.strip() for header in rows[0]]
-    required_headers = {"month", "source", "title", "url", "direction", "confidence", "notes"}
+    required_headers = {
+        "month",
+        "source",
+        "title",
+        "url",
+        "direction",
+        "confidence",
+        "notes",
+        "text",
+    }
     missing_headers = required_headers - set(headers)
     if missing_headers:
         raise ValueError(f"Missing required columns: {sorted(missing_headers)}")

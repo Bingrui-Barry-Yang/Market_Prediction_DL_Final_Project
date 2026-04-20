@@ -22,7 +22,7 @@ Score scale (1-15):
 
 Usage:
     export GEMINI_API_KEY=...
-    python scripts/run_gepa.py data/train/articles_with_text.jsonl
+    python scripts/run_gepa.py data/train/articles.jsonl
 """
 
 import argparse
@@ -145,6 +145,8 @@ def load_jsonl(data_path: str) -> tuple[list[DefaultDataInst], list[DefaultDataI
     with open(data_path, encoding="utf-8") as f:
         rows = [json.loads(line) for line in f if line.strip()]
 
+    rows_with_text = sum(1 for row in rows if str(row.get("text", "")).strip())
+
     for i, row in enumerate(rows):
         gold_score = row.get("gold_score")
         gold_reasoning = row.get("gold_reasoning", "").strip()
@@ -169,6 +171,7 @@ def load_jsonl(data_path: str) -> tuple[list[DefaultDataInst], list[DefaultDataI
             trainset.append(instance)
 
     print(f"[INFO] Loaded {len(trainset)} train, {len(valset)} val examples.")
+    print(f"[INFO] Records with article text: {rows_with_text}/{len(rows)}")
     print("[INFO] Score distribution:")
     all_scores = [int(inst["answer"]) for inst in trainset + valset]
     for s in sorted(set(all_scores)):

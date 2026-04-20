@@ -35,7 +35,6 @@ Use the 30 curated training articles to optimize prompts for structured informat
 Expected inputs:
 
 - `data/train/articles.jsonl`
-- `data/train/articles_with_text.jsonl` for GEPA runs that include scraped article body text
 - prompt templates under `src/prompts/` or future prompt asset files
 
 Expected outputs:
@@ -112,7 +111,7 @@ JSONL is the canonical dataset format. Each line in `data/train/articles.jsonl` 
 ```json
 {
   "article_id": "article-001",
-  "text": "",
+  "text": "Full article text...",
   "title": "Bitcoin price prediction article title",
   "url": "https://example.com/article",
   "source": "Example News",
@@ -122,7 +121,7 @@ JSONL is the canonical dataset format. Each line in `data/train/articles.jsonl` 
 }
 ```
 
-The `text` field is reserved for full article text and may be blank when only the worksheet title is available.
+The `text` field contains full article text from the curated worksheet.
 
 Human annotations include both direction and confidence. The JSONL stores these together as one `gold_score`:
 
@@ -217,16 +216,10 @@ Convert the human gold-standard worksheet to JSONL:
 uv run python scripts/convert_gold_standard_xlsx.py
 ```
 
-Scrape article body text into a separate JSONL so the original labels file stays unchanged:
+Run a local GEPA dry run with the canonical training JSONL:
 
 ```bash
-uv run python scripts/scrape_article_text.py
-```
-
-Run a local GEPA dry run with the enriched JSONL:
-
-```bash
-uv run python scripts/run_gepa.py --dry-run data/train/articles_with_text.jsonl
+uv run python scripts/run_gepa.py --dry-run data/train/articles.jsonl
 ```
 
 Run a Docker GEPA dry run:
@@ -234,7 +227,7 @@ Run a Docker GEPA dry run:
 ```bash
 docker compose run --rm research uv run python scripts/run_gepa.py \
   --dry-run \
-  data/train/articles_with_text.jsonl
+  data/train/articles.jsonl
 ```
 
 Run a Docker GEPA smoke test with budget `1`:
@@ -244,7 +237,7 @@ docker compose run --rm research uv run python scripts/run_gepa.py \
   --budget 1 \
   --output outputs/gepa_runs/bitcoin_sentiment/smoke_result_001.json \
   --run-dir outputs/gepa_runs/bitcoin_sentiment/smoke_run_001 \
-  data/train/articles_with_text.jsonl
+  data/train/articles.jsonl
 ```
 
 Run a larger GEPA optimization after the smoke test succeeds:
@@ -254,7 +247,7 @@ docker compose run --rm research uv run python scripts/run_gepa.py \
   --budget 20 \
   --output outputs/gepa_runs/bitcoin_sentiment/result_budget20.json \
   --run-dir outputs/gepa_runs/bitcoin_sentiment/run_budget20 \
-  data/train/articles_with_text.jsonl
+  data/train/articles.jsonl
 ```
 
 Run test evaluation:
