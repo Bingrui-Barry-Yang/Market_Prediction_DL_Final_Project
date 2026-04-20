@@ -249,6 +249,7 @@ def main():
         reflection_lm=args.reflection_lm,
         max_metric_calls=args.budget,
         run_dir=args.run_dir,
+        track_best_outputs=True,
     )
 
     best_prompt = result.best_candidate["system_prompt"]
