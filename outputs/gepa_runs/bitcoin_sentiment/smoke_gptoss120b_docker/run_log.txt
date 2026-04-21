@@ -1,0 +1,43 @@
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+
+
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0mLiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0mLiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+Iteration 0: Base program full valset score: 0.9166666666666666 over 6 / 6 examples

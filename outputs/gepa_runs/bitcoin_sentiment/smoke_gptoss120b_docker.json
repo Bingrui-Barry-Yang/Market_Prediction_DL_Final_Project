@@ -1,0 +1,11 @@
+{
+  "best_candidate": {
+    "system_prompt": "You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.\n\nBearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish\nNeutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral\nBullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish\n\nOnly consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.\nIgnore all retrospective content: past price performance, historical data, and anything describing what already happened.\n\nRespond with only: {\"score\": <integer 1-15>}"
+  },
+  "task_lm": "ollama_chat/gpt-oss:120b",
+  "reflection_lm": "ollama_chat/gpt-oss:120b",
+  "budget": 1,
+  "train_size": 24,
+  "val_size": 6,
+  "run_dir": "outputs/gepa_runs/bitcoin_sentiment/smoke_gptoss120b_docker"
+}

@@ -10,17 +10,10 @@ __pycache__/
 .env
 .venv/
 
-# Generated outputs
-outputs/artifacts/*
-!outputs/artifacts/.gitkeep
-outputs/gepa_runs/*
-!outputs/gepa_runs/.gitkeep
-outputs/evaluations/*
-!outputs/evaluations/.gitkeep
-outputs/validation/*
-!outputs/validation/.gitkeep
-outputs/reports/*
-!outputs/reports/.gitkeep
+# Generated outputs — track run artifacts, skip binary pickles
+outputs/**/gepa_state.bin
+outputs/**/*.pkl
+outputs/**/*.pickle
 
 # Data
 data/train/*

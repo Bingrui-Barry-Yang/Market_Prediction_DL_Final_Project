@@ -27,7 +27,9 @@ Usage:
 
 import argparse
 import json
+import time
 from pathlib import Path
+from threading import Lock
 
 from gepa.adapters.default_adapter.default_adapter import (
     DefaultDataInst,
@@ -120,6 +122,40 @@ class SentimentScoreEvaluator:
         )
 
         return EvaluationResult(score=partial, feedback=feedback)
+
+
+def build_logging_reflection_lm(model_name: str, run_dir: str):
+    import litellm
+
+    transcript_path = Path(run_dir) / "reflection_transcripts.jsonl"
+    transcript_path.parent.mkdir(parents=True, exist_ok=True)
+    lock = Lock()
+    counter = {"n": 0}
+
+    def _call(prompt):
+        if isinstance(prompt, str):
+            messages = [{"role": "user", "content": prompt}]
+        else:
+            messages = prompt
+
+        response = litellm.completion(model=model_name, messages=messages)
+        content = response.choices[0].message.content
+
+        with lock:
+            counter["n"] += 1
+            record = {
+                "call_index": counter["n"],
+                "timestamp": time.time(),
+                "model": model_name,
+                "messages": messages,
+                "response": content,
+            }
+            with transcript_path.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+        return content
+
+    return _call
 
 
 def build_article_input(row: dict[str, object]) -> str:
@@ -240,13 +276,17 @@ def main():
     print(f"[INFO] Task LM:       {args.task_lm}")
     print(f"[INFO] Reflection LM: {args.reflection_lm}\n")
 
+    reflection_lm_callable = build_logging_reflection_lm(
+        args.reflection_lm, args.run_dir
+    )
+
     result = gepa.optimize(
         seed_candidate={"system_prompt": SEED_PROMPT},
         trainset=trainset,
         valset=valset,
         task_lm=args.task_lm,
         evaluator=SentimentScoreEvaluator(),
-        reflection_lm=args.reflection_lm,
+        reflection_lm=reflection_lm_callable,
         max_metric_calls=args.budget,
         run_dir=args.run_dir,
         track_best_outputs=True,
