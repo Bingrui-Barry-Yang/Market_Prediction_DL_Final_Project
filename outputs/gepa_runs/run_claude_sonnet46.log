@@ -1,0 +1,1464 @@
+[INFO] Loaded 24 train, 6 val examples.
+[INFO] Records with article text: 30/30
+[INFO] Score distribution:
+          2 (Bearish  (confidence 2)): 2
+          3 (Bearish  (confidence 3)): 2
+          4 (Bearish  (confidence 4)): 5
+          7 (Neutral  (confidence 2)): 4
+         11 (Bullish  (confidence 1)): 1
+         12 (Bullish  (confidence 2)): 1
+         13 (Bullish  (confidence 3)): 6
+         14 (Bullish  (confidence 4)): 7
+         15 (Bullish  (confidence 5)): 2
+
+[INFO] Starting GEPA optimization (budget=150)...
+[INFO] Task LM:        anthropic/claude-sonnet-4-6
+[INFO] Reflection LM:  anthropic/claude-sonnet-4-6
+[INFO] Retry cfg:      num_retries=8, base_backoff=2.0s, max_backoff=30.0s, timeout=60s
+[INFO] Execution:      sequential (callable task-LM, no batch_completion)
+
+Loading gepa state from run dir
+Iteration 0: Base program full valset score: 0.7916666666666666 over 6 / 6 examples
+Iteration 1: Selected program 0 score: 0.7916666666666666
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.0s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.8s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 3/9; sleeping 8.8s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.0s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 1: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Scoring guidelines:
+- Score 15 (strongly bullish): Article is overwhelmingly bullish with multiple high price targets, strong institutional backing, macro tailwinds, and nearly universal upside expectations. Example: Article predicts $45K by March with multiple supporting factors including ETF hopes, rate cuts, investor withdrawals from exchanges, and broader market enthusiasm — all pointing uniformly upward.
+- Score 14 (very bullish): Article is broadly bullish with many supporting forecasts and upside catalysts, but may acknowledge some risks or uncertainties without giving them much weight.
+- Score 13 (bullish): Article is clearly bullish with solid forward-looking upside, but hedges somewhat or includes notable caveats/risks alongside the optimism.
+- Score 3 (bearish): Multiple bearish indicators, analyst warnings, downside targets cited, and defensive market positioning. Bears targeting lower price levels with technical indicators confirming downside.
+
+Key scoring factors to weigh:
+1. Number and magnitude of bullish vs. bearish price targets
+2. Institutional and expert consensus direction
+3. Macro factors cited (rate cuts = bullish; rate hikes/inflation = bearish)
+4. On-chain signals: exchange outflows/accumulation = bullish; inflows/selling = bearish
+5. Technical indicators: RSI oversold in downtrend = bearish continuation; healthy RSI with uptrend = bullish
+6. Market sentiment indicators (Fear & Greed, derivatives positioning)
+7. Geopolitical/regulatory risks as headwinds
+8. ETF inflows and institutional adoption signals = bullish
+9. Whale/large holder behavior: accumulation = bullish; selling = bearish
+10. Investor behavior: withdrawing BTC from exchanges (self-custody) = strongly bullish signal
+
+Calibration notes:
+- When an article uniformly points upward across ALL dimensions (price targets, macro, on-chain, sentiment, institutional) with little to no bearish counterweight, score at the maximum end (15).
+- Do not discount bullish scores merely because the article mentions general risks — only reduce score if those risks are given significant forward-looking weight.
+- A "cautiously optimistic" article with strong upside targets but acknowledged volatility risks scores around 13-14, not 15.
+- An article where bears are clearly in control with downside targets and defensive positioning scores 2-4.
+
+Respond with only: {"score": <integer 1-15>}
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.5s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.1s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 3/9; sleeping 10.0s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.5s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.0s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 3/9; sleeping 9.9s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 1: New subsample score 3.0 is better than old score 2.5. Continue to full eval and add to candidate pool.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.9s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.2s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.8s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.2s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 4.6s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 1: Valset score for new program: 0.7916666666666666 (coverage 6 / 6)
+Iteration 1: Val aggregate for new program: 0.7916666666666666
+Iteration 1: Individual valset scores for new program: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 0.75, 5: 0.5}
+Iteration 1: New valset pareto front scores: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.5}
+Iteration 1: Valset pareto front aggregate score: 0.8333333333333334
+Iteration 1: Updated valset pareto front programs: {0: {0, 1}, 1: {1}, 2: {0, 1}, 3: {0, 1}, 4: {0}, 5: {0, 1}}
+Iteration 1: Best valset aggregate score so far: 0.7916666666666666
+Iteration 1: Best program as per aggregate score on valset: 0
+Iteration 1: Best score on valset: 0.7916666666666666
+Iteration 1: Linear pareto front program index: 0
+Iteration 1: New program candidate index: 1
+Iteration 2: Selected program 0 score: 0.7916666666666666
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.5s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 2: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Scoring guidelines:
+- Score based on the net balance of bullish vs. bearish forward-looking signals.
+- When an article presents a primarily bullish outlook but includes meaningful risk factors or hedging language (e.g., government shutdowns, regulatory risk, macro uncertainty), reduce the score by 1 compared to what a purely bullish reading would suggest.
+- When an article presents a primarily bearish outlook but includes some mitigating bullish scenarios or recovery possibilities, increase the score by 1 compared to what a purely bearish reading would suggest.
+- Double-top patterns, head-and-shoulders patterns, and similar bearish technical chart patterns are moderately bearish signals, not strongly bearish.
+- Historical seasonal patterns (e.g., "Uptober," Q4 strength) count as forward-looking signals only if the article frames them as expectations for the future.
+- Stock-to-Flow model projections, RSI-based outlooks, and moving average targets count as forward-looking bullish signals.
+- Price targets in the $100K+ range for Bitcoin within a cycle are moderately bullish (score ~13), not strongly bullish (15), unless the article is unambiguously euphoric with no caveats.
+- Dying NFT demand, declining altcoin metrics, and bearish alt signals contribute modestly to a bearish Bitcoin sentiment score only if they reflect broader crypto market weakness.
+- Calibrate carefully: avoid overweighting either bullish or bearish signals. Aim for the most precise integer on the scale.
+
+Respond with only: {"score": <integer 1-15>}
+Iteration 2: New subsample score 2.75 is better than old score 2.5. Continue to full eval and add to candidate pool.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.8s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.6s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.3s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.4s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.7s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 2: Valset score for new program: 0.7916666666666666 (coverage 6 / 6)
+Iteration 2: Val aggregate for new program: 0.7916666666666666
+Iteration 2: Individual valset scores for new program: {0: 0.75, 1: 0.75, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.5}
+Iteration 2: New valset pareto front scores: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.5}
+Iteration 2: Valset pareto front aggregate score: 0.8333333333333334
+Iteration 2: Updated valset pareto front programs: {0: {0, 1, 2}, 1: {1}, 2: {0, 1, 2}, 3: {0, 1, 2}, 4: {0, 2}, 5: {0, 1, 2}}
+Iteration 2: Best valset aggregate score so far: 0.7916666666666666
+Iteration 2: Best program as per aggregate score on valset: 0
+Iteration 2: Best score on valset: 0.7916666666666666
+Iteration 2: Linear pareto front program index: 0
+Iteration 2: New program candidate index: 2
+Iteration 3: Selected program 2 score: 0.7916666666666666
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.1s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.3s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.8s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 3: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Scoring guidelines:
+- Score based on the net balance of bullish vs. bearish forward-looking signals.
+- Carefully assess the PROPORTION of bullish vs. bearish content. If an article devotes roughly equal space and weight to both bullish and bearish scenarios without clearly favoring one, score it near the middle of the neutral range (7–8), not in the bullish range.
+- Only score in the bullish range (11+) if the article's overall tone and majority of forward-looking content is clearly bullish.
+- When an article presents a primarily bullish outlook but includes meaningful risk factors or hedging language (e.g., government shutdowns, regulatory risk, macro uncertainty), reduce the score by 1 compared to what a purely bullish reading would suggest.
+- When an article presents a primarily bearish outlook but includes some mitigating bullish scenarios or recovery possibilities, increase the score by 1 compared to what a purely bearish reading would suggest.
+- Articles that list price targets on both sides (e.g., $120K upside AND $50K downside) without a clear directional lean should score 7–9.
+- Articles that present uncertainty or say "markets could go either way" without a net bullish or bearish stance should score near 7–8.
+- Double-top patterns, head-and-shoulders patterns, and similar bearish technical chart patterns are moderately bearish signals, not strongly bearish.
+- Historical seasonal patterns (e.g., "Uptober," Q4 strength) count as forward-looking signals only if the article frames them as expectations for the future.
+- Stock-to-Flow model projections, RSI-based outlooks, and moving average targets count as forward-looking bullish signals.
+- Price targets in the $100K–$150K range for Bitcoin within a cycle are moderately bullish (score ~13–14). Score 14 when expert consensus is clearly and uniformly bullish with specific high targets and minimal caveats. Score 13 when bullish but with notable risk sections or mixed signals.
+- Price targets of $200K+ with strong institutional backing and minimal caveats may warrant a score of 14–15.
+- Dying NFT demand, declining altcoin metrics, and bearish alt signals contribute modestly to a bearish Bitcoin sentiment score only if they reflect broader crypto market weakness.
+- Articles that mention bullish scenarios prominently (e.g., $110K–$120K targets) but also include substantial bearish risk discussion or downside scenarios should NOT automatically score 13+. Weigh both sides carefully.
+- A closing line like "odds may favor the bulls" is a weak bullish lean, not a strong one — it does not override a balanced article.
+- Calibrate carefully: avoid overweighting either bullish or bearish signals. Aim for the most precise integer on the scale.
+
+Structural heuristics:
+- If the article has roughly equal bullish and bearish sections with no clear net lean: score 7–8.
+- If the article is primarily neutral/analytical with no strong directional view: score 7–9.
+- If the article is primarily bullish with minor caveats: score 12–13.
+- If the article is strongly and uniformly bullish with specific high price targets and expert consensus: score 13–14.
+- If the article is euphoric with no meaningful caveats: score 15.
+
+Respond with only: {"score": <integer 1-15>}
+Iteration 3: New subsample score 1.75 is better than old score 1.5. Continue to full eval and add to candidate pool.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.5s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.4s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.9s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.6s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.4s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 3: Valset score for new program: 0.7083333333333334 (coverage 6 / 6)
+Iteration 3: Val aggregate for new program: 0.7083333333333334
+Iteration 3: Individual valset scores for new program: {0: 0.5, 1: 0.75, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.25}
+Iteration 3: New valset pareto front scores: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.5}
+Iteration 3: Valset pareto front aggregate score: 0.8333333333333334
+Iteration 3: Updated valset pareto front programs: {0: {0, 1, 2}, 1: {1}, 2: {0, 1, 2, 3}, 3: {0, 1, 2, 3}, 4: {0, 2, 3}, 5: {0, 1, 2}}
+Iteration 3: Best valset aggregate score so far: 0.7916666666666666
+Iteration 3: Best program as per aggregate score on valset: 0
+Iteration 3: Best score on valset: 0.7916666666666666
+Iteration 3: Linear pareto front program index: 0
+Iteration 3: New program candidate index: 3
+Iteration 4: Selected program 2 score: 0.7916666666666666
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.0s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.9s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.1s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 4: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Scoring guidelines:
+- Score based on the net balance of bullish vs. bearish forward-looking signals.
+- When an article presents a primarily bullish outlook but includes meaningful risk factors or hedging language (e.g., government shutdowns, regulatory risk, macro uncertainty, S&P 500 corrections, Fed uncertainty), reduce the score by 1 compared to what a purely bullish reading would suggest.
+- When an article presents a primarily bearish outlook but includes some mitigating bullish scenarios or recovery possibilities, increase the score by 1 compared to what a purely bearish reading would suggest.
+- Double-top patterns, head-and-shoulders patterns, and similar bearish technical chart patterns are moderately bearish signals, not strongly bearish.
+- Historical seasonal patterns (e.g., "Uptober," Q4 strength) count as forward-looking signals only if the article frames them as expectations for the future.
+- Stock-to-Flow model projections, RSI-based outlooks, and moving average targets count as forward-looking bullish signals. When multiple technical models (S2F, RSI, 200WMA, realized price metrics) converge on a bullish outlook with specific price targets, this is a strongly bullish signal.
+- Price targets in the $100K–$200K range for Bitcoin within a cycle are moderately bullish (score ~13–14). Price targets in the $200K–$500K range with multiple supporting models and no strong caveats are strongly bullish (score ~15).
+- Dying NFT demand, declining altcoin metrics, and bearish alt signals contribute modestly to a bearish Bitcoin sentiment score only if they reflect broader crypto market weakness.
+- Articles that prominently feature multiple bullish catalysts (e.g., ETF approvals, halving events, rate cuts, institutional adoption) with convergent price targets and minimal hedging should score 14–15.
+- Articles that mention very high price targets ($200K–$250K+) but are heavily hedged with warnings about market cycles ending, broad market corrections, or significant volatility ("joy, depression and rally") should score closer to neutral (6–8), not strongly bullish, because the hedging and cycle-end warnings substantially offset the bullish targets.
+- Calibrate carefully: avoid overweighting either bullish or bearish signals. Aim for the most precise integer on the scale.
+
+Key calibration examples:
+- An article forecasting $200K–$250K BTC but also warning of a possible 15–20% S&P 500 correction, "joy, depression and rally," and cycle-end uncertainty → score ~7 (the extreme uncertainty and hedging nearly neutralize the high price target).
+- An article with multiple technical models (S2F, RSI, 200WMA, realized price) all pointing bullish, with $120K short-term and $200K+ long-term targets, and only a generic "no prediction is guaranteed" caveat → score ~15 (strongly bullish with minimal real hedging).
+- An article citing ETF inflows, halving supply reduction, rate cut expectations, and institutional demand with $63K–$170K targets and minimal bearish signals → score ~14.
+
+Respond with only: {"score": <integer 1-15>}
+Iteration 4: New subsample score 3.0 is better than old score 1.25. Continue to full eval and add to candidate pool.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.3s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.3s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 4.6s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 4: Valset score for new program: 0.75 (coverage 6 / 6)
+Iteration 4: Val aggregate for new program: 0.75
+Iteration 4: Individual valset scores for new program: {0: 0.75, 1: 0.75, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.25}
+Iteration 4: New valset pareto front scores: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.5}
+Iteration 4: Valset pareto front aggregate score: 0.8333333333333334
+Iteration 4: Updated valset pareto front programs: {0: {0, 1, 2, 4}, 1: {1}, 2: {0, 1, 2, 3, 4}, 3: {0, 1, 2, 3, 4}, 4: {0, 2, 3, 4}, 5: {0, 1, 2}}
+Iteration 4: Best valset aggregate score so far: 0.7916666666666666
+Iteration 4: Best program as per aggregate score on valset: 0
+Iteration 4: Best score on valset: 0.7916666666666666
+Iteration 4: Linear pareto front program index: 0
+Iteration 4: New program candidate index: 4
+Iteration 5: Selected program 2 score: 0.7916666666666666
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.6s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.6s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.2s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.3s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.1s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 5: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+---
+
+SCORING GUIDELINES:
+
+**Net balance principle:** Score based on the net balance of bullish vs. bearish forward-looking signals. Do not average signals mechanically — weigh the overall editorial framing and the direction most analysts in the article point toward.
+
+**Bearish signals (push score lower):**
+- Double-top patterns, head-and-shoulders patterns, and similar bearish technical chart patterns are moderately bearish signals (not strongly bearish).
+- Bearish MACD, RSI breakdown, moving average breakdown, broken support levels are meaningful bearish technical signals.
+- Historically weak seasonal periods (e.g., "Red September," September Effect) count as bearish forward-looking signals when the article explicitly frames them as expectations for the coming period.
+- ETF outflows, institutional selling pressure, and macro headwinds (tariffs, geopolitical risk) framed as ongoing or worsening are bearish signals.
+- "Continued downtrend," "caution," "false breakouts," "fading rallies" language is bearish.
+- Price floor predictions (e.g., "$60K–$65K realistic floor") indicating significant expected decline are bearish signals.
+
+**Bullish signals (push score higher):**
+- Stock-to-Flow model projections, RSI-based bullish divergence, and moving average support targets count as forward-looking bullish signals.
+- Institutional accumulation, whale buying, ETF inflows are bullish signals.
+- Price targets in the $100K+ range within a cycle are moderately bullish (~score 13), not strongly bullish (15), unless unambiguously euphoric with no caveats.
+- Fed rate cut expectations, dollar weakness, and liquidity tailwinds framed as upcoming catalysts are bullish signals.
+- Bullish seasonal patterns (e.g., "Uptober," Q4 strength) count as bullish only if framed as future expectations.
+- Analyst predictions of new all-time highs or $200K+ targets are strongly bullish signals.
+
+**Hedging and mixed signals:**
+- When an article presents a primarily bullish outlook but includes meaningful risk factors or hedging language (e.g., regulatory risk, macro uncertainty, government shutdowns), reduce the score by 1 compared to what a purely bullish reading would suggest.
+- When an article presents a primarily bearish outlook but includes some mitigating bullish scenarios or recovery possibilities, increase the score by 1 compared to what a purely bearish reading would suggest.
+- Dying NFT demand, declining altcoin metrics, and bearish alt signals contribute modestly to a bearish Bitcoin sentiment score only if they reflect broader crypto market weakness.
+
+---
+
+CRITICAL CALIBRATION RULES:
+
+1. **Do not over-weight bullish counterarguments in bearish articles.** If an article's primary framing, headline, and majority of analyst quotes point to downside risk or bearish seasonal patterns, the score should be in the bearish range (1–5), even if a few bullish counterpoints are mentioned. Minority bullish views in a predominantly bearish article should raise the score by at most 1 point (e.g., from a 3 to a 4), not move it into neutral or bullish territory.
+
+2. **Seasonal bearish framing is a strong bearish signal.** If the article explicitly frames a historically weak month (e.g., September) as a reason to expect near-term weakness, and technical indicators confirm breakdown, this is a meaningfully bearish forward-looking setup — score accordingly (likely 3–5 range).
+
+3. **Broken support levels + bearish technicals + bearish seasonal framing = bearish score.** The combination of MACD below zero, RSI breakdown, broken support, and negative seasonal expectations should produce a score in the 3–5 range regardless of bullish counterarguments mentioned.
+
+4. **Price floor predictions indicating large drawdowns are bearish.** If analysts predict a realistic floor 15–50% below current price, that is a bearish signal.
+
+5. **$100K+ price targets:** Moderately bullish (~13). Do not score 15 unless the article is unambiguously euphoric with no caveats.
+
+6. **Avoid anchoring to a neutral midpoint.** The scale is not centered on 8. Assign scores confidently in the bearish or bullish ranges when the evidence clearly points there.
+
+7. **Editorial framing matters.** The article's overall tone, headline framing, and the weight given to bearish vs. bullish voices should guide the final score. An article asking "how low can Bitcoin go?" and answering with specific downside targets is bearish in framing even if it includes some bull case scenarios.
+
+---
+
+EXAMPLES OF CORRECT SCORING:
+
+- Article predicting $60K–$65K floor, analysts warn of continued downtrend, macro headwinds, false breakouts: **Score 4** (moderately bearish — some bullish long-term holders noted as mitigating factor raises from 3 to 4).
+- Article predicting Bitcoin will top $100K in 2024, halving tailwinds, institutional adoption, with regulatory/competition risks noted: **Score 13** (moderately bullish with caveats).
+- Article framing September as historically worst month, broken support levels, bearish MACD/RSI, ETF outflows — even with some bull case mentioned: **Score 4** (bearish seasonal + technical breakdown dominates; minority bull views raise by 1 from what would otherwise be a 3).
+
+---
+
+Respond with only: {"score": <integer 1-15>}
+Iteration 5: New subsample score 2.0 is not better than old score 2.0, skipping
+Iteration 6: Selected program 1 score: 0.7916666666666666
+Iteration 6: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Scoring guidelines:
+- Score 15 (strongly bullish): Article is overwhelmingly bullish with multiple high price targets, strong institutional backing, macro tailwinds, and nearly universal upside expectations. Example: Article predicts $45K by March with multiple supporting factors including ETF hopes, rate cuts, investor withdrawals from exchanges, and broader market enthusiasm — all pointing uniformly upward.
+- Score 14 (very bullish): Article is broadly bullish with many supporting forecasts and upside catalysts, but may acknowledge some risks or uncertainties without giving them much weight. Example: Article predicts Bitcoin reaching $200,000–$300,000 in 2025 with multiple institutional forecasts (Standard Chartered, Bernstein, ARK), ETF inflows, and corporate treasury diversification as catalysts — risks mentioned but not emphasized.
+- Score 13 (bullish): Article is clearly bullish with solid forward-looking upside, but hedges somewhat or includes notable caveats/risks alongside the optimism. Example: Multiple bullish indicators and upside targets present, but article also highlights a meaningful downside scenario (e.g., "if key support breaks, price could fall 14-22%") or significant technical concerns that are given real weight.
+- Score 12 (moderately bullish): Article leans bullish but with more balanced treatment of risks, or bullish signals are present but conditional/uncertain.
+- Score 3 (bearish): Multiple bearish indicators, analyst warnings, downside targets cited, and defensive market positioning. Bears targeting lower price levels with technical indicators confirming downside.
+
+Key scoring factors to weigh:
+1. Number and magnitude of bullish vs. bearish price targets
+2. Institutional and expert consensus direction
+3. Macro factors cited (rate cuts = bullish; rate hikes/inflation = bearish)
+4. On-chain signals: exchange outflows/accumulation = bullish; inflows/selling = bearish
+5. Technical indicators: RSI oversold in downtrend = bearish continuation; healthy RSI with uptrend = bullish
+6. Market sentiment indicators (Fear & Greed, derivatives positioning)
+7. Geopolitical/regulatory risks as headwinds
+8. ETF inflows and institutional adoption signals = bullish
+9. Whale/large holder behavior: accumulation = bullish; selling = bearish
+10. Investor behavior: withdrawing BTC from exchanges (self-custody) = strongly bullish signal
+
+Calibration notes:
+- When an article uniformly points upward across ALL dimensions (price targets, macro, on-chain, sentiment, institutional) with little to no bearish counterweight, score at the maximum end (15).
+- Do not discount bullish scores merely because the article mentions general risks — only reduce score if those risks are given significant forward-looking weight.
+- A "cautiously optimistic" article with strong upside targets but acknowledged volatility risks scores around 13-14, not 15.
+- An article where bears are clearly in control with downside targets and defensive positioning scores 2-4.
+- Score 13 vs 14 distinction: If the article mentions a concrete downside scenario with a specific trigger and price target (e.g., "if $70,000 breaks, price drops to $66,448"), that downside scenario should pull the score toward 13. If risks are vague or general warnings only, stay at 14.
+- Score 12 vs 13 distinction: Score 13 when bullish signals dominate but there is one meaningful caveat. Score 12 when the article is more mixed — e.g., short-term bearish technical patterns alongside long-term bullish structure, or when the bullish case is conditional on a bottom forming rather than being asserted with confidence.
+- Technical patterns matter: A "death cross" or "rising wedge" mentioned as a forward-looking bearish signal reduces the score even if the overall tone is bullish. However, if the article contextualizes these as historically weak signals or local bottoms (not long-term bearish), the reduction should be modest.
+- Lunar cycle / unconventional analysis combined with technical bottom signals: treat as mildly bullish but not strongly so. If the article combines multiple support levels, SMA analysis, and bottom-calling signals pointing to a near-term reversal, lean toward 13 rather than 12.
+- Articles calling for a local bottom with strong support levels and historical precedent for rebounds score around 13, even if short-term bearish technicals are present.
+
+Respond with only: {"score": <integer 1-15>}
+Iteration 6: New subsample score 3.0 is better than old score 2.5. Continue to full eval and add to candidate pool.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.9s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 6: Valset score for new program: 0.7916666666666666 (coverage 6 / 6)
+Iteration 6: Val aggregate for new program: 0.7916666666666666
+Iteration 6: Individual valset scores for new program: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 0.75, 5: 0.5}
+Iteration 6: New valset pareto front scores: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.5}
+Iteration 6: Valset pareto front aggregate score: 0.8333333333333334
+Iteration 6: Updated valset pareto front programs: {0: {0, 1, 2, 4, 5}, 1: {1, 5}, 2: {0, 1, 2, 3, 4, 5}, 3: {0, 1, 2, 3, 4, 5}, 4: {0, 2, 3, 4}, 5: {0, 1, 2, 5}}
+Iteration 6: Best valset aggregate score so far: 0.7916666666666666
+Iteration 6: Best program as per aggregate score on valset: 0
+Iteration 6: Best score on valset: 0.7916666666666666
+Iteration 6: Linear pareto front program index: 0
+Iteration 6: New program candidate index: 5
+Iteration 7: Selected program 5 score: 0.7916666666666666
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.7s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.9s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.5s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.7s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.7s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 7: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Scoring guidelines:
+- Score 15 (strongly bullish): Article is overwhelmingly bullish with multiple high price targets, strong institutional backing, macro tailwinds, and nearly universal upside expectations. Example: Article predicts $45K by March with multiple supporting factors including ETF hopes, rate cuts, investor withdrawals from exchanges, and broader market enthusiasm — all pointing uniformly upward.
+- Score 14 (very bullish): Article is broadly bullish with many supporting forecasts and upside catalysts, but may acknowledge some risks or uncertainties without giving them much weight. Example: Article predicts Bitcoin reaching $200,000–$300,000 in 2025 with multiple institutional forecasts, ETF inflows, and corporate treasury diversification as catalysts — risks mentioned but not emphasized. Also applies when multiple analysts predict "a big move is likely ahead" with consolidation patterns suggesting upside, strong institutional accumulation signals, and macro tailwinds — even if the article maintains some caution about timing.
+- Score 13 (bullish): Article is clearly bullish with solid forward-looking upside, but hedges somewhat or includes notable caveats/risks alongside the optimism. Example: Multiple bullish indicators and upside targets present, but article also highlights a meaningful downside scenario (e.g., "if key support breaks, price could fall 14-22%") or significant technical concerns that are given real weight.
+- Score 12 (moderately bullish): Article leans bullish but with more balanced treatment of risks, or bullish signals are present but conditional/uncertain.
+- Score 8 (weakly neutral): Article presents a mixed outlook with some mildly bullish signals but also significant bearish signals — e.g., whale inactivity, RSI near oversold but still declining, range-bound expectations with downside risk scenarios given real weight.
+- Score 7 (neutral, slightly bearish lean): Article presents multiple sides with no clear directional conviction, or explicitly tries to balance bullish and bearish cases without a dominant lean. Multi-asset articles covering BTC, ETH, and others where Bitcoin-specific sentiment is mixed or unclear may score here.
+- Score 4 (bearish): Multiple bearish indicators cited, whales reducing activity, large holders selling, downside price targets given real weight, bearish technical patterns confirmed.
+- Score 3 (bearish): Multiple strong bearish indicators, analyst warnings, downside targets cited, and defensive market positioning. Bears targeting lower price levels with technical indicators confirming downside.
+
+Key scoring factors to weigh:
+1. Number and magnitude of bullish vs. bearish price targets
+2. Institutional and expert consensus direction
+3. Macro factors cited (rate cuts = bullish; rate hikes/inflation = bearish; stable rates with improving macro = mildly bullish)
+4. On-chain signals: exchange outflows/accumulation = bullish; inflows/selling = bearish; whale inactivity/flat = bearish signal
+5. Technical indicators: RSI oversold in downtrend = bearish continuation (NOT bullish rebound signal unless confirmed); healthy RSI with uptrend = bullish; golden cross = bullish; death cross = bearish
+6. Market sentiment indicators (Fear & Greed, derivatives positioning)
+7. Geopolitical/regulatory risks as headwinds (tariffs, macro uncertainty = bearish pressure)
+8. ETF inflows and institutional adoption signals = bullish
+9. Whale/large holder behavior: accumulation = bullish; selling or flat/inactive = bearish
+10. Investor behavior: withdrawing BTC from exchanges (self-custody) = strongly bullish signal
+11. Consolidation with low volatility + institutional accumulation + analyst predictions of "big move ahead" = bullish (score 13-14)
+
+Calibration notes:
+- When an article uniformly points upward across ALL dimensions (price targets, macro, on-chain, sentiment, institutional) with little to no bearish counterweight, score at the maximum end (15).
+- Do not discount bullish scores merely because the article mentions general risks — only reduce score if those risks are given significant forward-looking weight.
+- A "cautiously optimistic" article with strong upside targets but acknowledged volatility risks scores around 13-14, not 15.
+- An article where bears are clearly in control with downside targets and defensive positioning scores 2-4.
+
+CRITICAL — RSI near oversold (e.g., 31): This is NOT a bullish signal by itself. In a downtrend, RSI approaching oversold means the asset IS declining, not that it will rebound. Only treat it as a potential rebound signal if the article explicitly frames it that way AND other bullish signals confirm. If the article presents RSI ~31 alongside whale inactivity and large holder selling, this is a BEARISH signal cluster → score 3-5.
+
+CRITICAL — Whale inactivity / "staying flat": When whales are not accumulating and large holder netflow drops sharply (e.g., -600%), this is a BEARISH signal, not neutral. It signals reduced buying interest and potential for further downside.
+
+CRITICAL — Multi-asset articles (BTC + ETH + SOL etc.): When an article covers multiple cryptocurrencies, score based on the Bitcoin-specific forward-looking sentiment. If Bitcoin's outlook is described as consolidating near highs with institutional accumulation, multiple analysts predicting upside moves to $140K+, and macro tailwinds present — even with some caution about timing — this is bullish (13-14), not neutral.
+
+CRITICAL — "Mixed/balanced" scoring trap: Do not default to neutral (6-10) simply because an article presents both bullish and bearish possibilities. If the article's overall weight of evidence, number of analysts, and price targets lean clearly in one direction, score accordingly. An article that says "here are two paths: $130K upside or $77K downside, but I think range-bound" with whale inactivity and declining netflows is bearish-leaning (score 4-6), not neutral.
+
+CRITICAL — Consolidation + "big move ahead" framing: When multiple analysts describe Bitcoin as being in a "key consolidation phase" with institutional accumulation, ETF support, regulatory tailwinds, and price targets of $140K+, this is a bullish setup even if the timing is uncertain. Score 13-14 depending on strength of consensus and number of supporting factors.
+
+Score 13 vs 14 distinction:
+- Score 14: Broad bullish consensus across multiple analysts, multiple upside targets, supportive macro/institutional factors, with risks mentioned only vaguely or briefly. Consolidation articles where the dominant message is "big move higher likely" with specific upside targets and strong supporting catalysts score 14.
+- Score 13: Bullish signals dominate but there is one meaningful, specific downside scenario with a concrete trigger and price target (e.g., "if $108,000 breaks, bearish structure forms") that is given real weight alongside the bullish case.
+
+Score 12 vs 13 distinction: Score 13 when bullish signals dominate but there is one meaningful caveat. Score 12 when the article is more mixed — e.g., short-term bearish technical patterns alongside long-term bullish structure, or when the bullish case is conditional on a bottom forming rather than being asserted with confidence.
+
+Score 7 vs 8 distinction: Score 8 when the article has mildly bullish elements but is weighed down by significant bearish signals (whale inactivity, selling pressure, downside risk). Score 7 when the article is genuinely balanced or trying to present both sides without a clear lean.
+
+Technical patterns matter: A "death cross" or "rising wedge" mentioned as a forward-looking bearish signal reduces the score even if the overall tone is bullish. A "golden cross" or "bull flag" adds to bullish score. However, contextualization matters — if the article frames bearish technicals as historically weak signals or local bottoms, the reduction should be modest.
+
+Respond with only: {"score": <integer 1-15>}
+Iteration 7: New subsample score 1.25 is better than old score 0.75. Continue to full eval and add to candidate pool.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.7s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 4.1s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 3/9; sleeping 8.4s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 7: Valset score for new program: 0.7916666666666666 (coverage 6 / 6)
+Iteration 7: Val aggregate for new program: 0.7916666666666666
+Iteration 7: Individual valset scores for new program: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 0.75, 5: 0.5}
+Iteration 7: New valset pareto front scores: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.5}
+Iteration 7: Valset pareto front aggregate score: 0.8333333333333334
+Iteration 7: Updated valset pareto front programs: {0: {0, 1, 2, 4, 5, 6}, 1: {1, 5, 6}, 2: {0, 1, 2, 3, 4, 5, 6}, 3: {0, 1, 2, 3, 4, 5, 6}, 4: {0, 2, 3, 4}, 5: {0, 1, 2, 5, 6}}
+Iteration 7: Best valset aggregate score so far: 0.7916666666666666
+Iteration 7: Best program as per aggregate score on valset: 0
+Iteration 7: Best score on valset: 0.7916666666666666
+Iteration 7: Linear pareto front program index: 0
+Iteration 7: New program candidate index: 6
+Iteration 8: Selected program 6 score: 0.7916666666666666
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.7s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.7s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 3/9; sleeping 9.2s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+Iteration 8: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Scoring guidelines:
+- Score 15 (strongly bullish): Article is overwhelmingly bullish with multiple high price targets, strong institutional backing, macro tailwinds, and nearly universal upside expectations. Example: Article predicts $45K by March with multiple supporting factors including ETF hopes, rate cuts, investor withdrawals from exchanges, and broader market enthusiasm — all pointing uniformly upward.
+- Score 14 (very bullish): Article is broadly bullish with many supporting forecasts and upside catalysts, but may acknowledge some risks or uncertainties without giving them much weight. Example: Article predicts Bitcoin reaching $200,000–$300,000 in 2025 with multiple institutional forecasts, ETF inflows, and corporate treasury diversification as catalysts — risks mentioned but not emphasized. Also applies when multiple analysts predict "a big move is likely ahead" with consolidation patterns suggesting upside, strong institutional accumulation signals, and macro tailwinds — even if the article maintains some caution about timing.
+- Score 13 (bullish): Article is clearly bullish with solid forward-looking upside, but hedges somewhat or includes notable caveats/risks alongside the optimism. Example: Multiple bullish indicators and upside targets present, but article also highlights a meaningful downside scenario (e.g., "if key support breaks, price could fall 14-22%") or significant technical concerns that are given real weight.
+- Score 12 (moderately bullish): Article leans bullish but with more balanced treatment of risks, or bullish signals are present but conditional/uncertain.
+- Score 11 (weakly bullish): Article has a bullish lean but with significant fear, uncertainty, or market hesitation counterbalancing the upside case. Bullish targets exist but are conditional or face meaningful near-term obstacles. Multiple fear indicators cited alongside optimistic long-term forecasts.
+- Score 8 (weakly neutral): Article presents a mixed outlook with some mildly bullish signals but also significant bearish signals — e.g., whale inactivity, RSI near oversold but still declining, range-bound expectations with downside risk scenarios given real weight.
+- Score 7 (neutral, slightly bearish lean): Article presents multiple sides with no clear directional conviction, or explicitly tries to balance bullish and bearish cases without a dominant lean. Multi-asset articles covering BTC, ETH, and others where Bitcoin-specific sentiment is mixed or unclear may score here.
+- Score 4 (bearish): Multiple bearish indicators cited, whales reducing activity, large holders selling, downside price targets given real weight, bearish technical patterns confirmed.
+- Score 3 (bearish): Multiple strong bearish indicators, analyst warnings, downside targets cited, and defensive market positioning. Bears targeting lower price levels with technical indicators confirming downside.
+- Score 2 (strongly bearish): Heavy bearish signals, significant fear and uncertainty dominating, multiple downside risks, little to no bullish counterweight. Applies also when: (a) article is almost entirely historical with only vague, uncommitted forward-looking language, or (b) the article's predictions are so hedged and uncertain as to provide no real bullish conviction — e.g., "Bitcoin COULD rise OR fall depending on X."
+
+Key scoring factors to weigh:
+1. Number and magnitude of bullish vs. bearish price targets
+2. Institutional and expert consensus direction
+3. Macro factors cited (rate cuts = bullish; rate hikes/inflation = bearish; stable rates with improving macro = mildly bullish; geopolitical uncertainty, tariffs, trade wars = bearish)
+4. On-chain signals: exchange outflows/accumulation = bullish; inflows/selling = bearish; whale inactivity/flat = bearish signal
+5. Technical indicators: RSI oversold in downtrend = bearish continuation (NOT bullish rebound signal unless confirmed); healthy RSI with uptrend = bullish; golden cross = bullish; death cross = bearish
+6. Market sentiment indicators (Fear & Greed, derivatives positioning) — "Extreme Fear" = bearish signal even if analyst claims it's a contrarian buy
+7. Geopolitical/regulatory risks as headwinds (tariffs, macro uncertainty = bearish pressure)
+8. ETF inflows and institutional adoption signals = bullish
+9. Whale/large holder behavior: accumulation = bullish; selling or flat/inactive = bearish
+10. Investor behavior: withdrawing BTC from exchanges (self-custody) = strongly bullish signal
+11. Consolidation with low volatility + institutional accumulation + analyst predictions of "big move ahead" = bullish (score 13-14)
+12. Low trading volume and low liquidations = bearish signal for near-term breakout potential
+
+Calibration notes:
+- When an article uniformly points upward across ALL dimensions (price targets, macro, on-chain, sentiment, institutional) with little to no bearish counterweight, score at the maximum end (15).
+- Do not discount bullish scores merely because the article mentions general risks — only reduce score if those risks are given significant forward-looking weight.
+- A "cautiously optimistic" article with strong upside targets but acknowledged volatility risks scores around 13-14, not 15.
+- An article where bears are clearly in control with downside targets and defensive positioning scores 2-4.
+- An article that is primarily historical analysis with only weak, hedged, or uncommitted forward-looking predictions scores 1-3, NOT 11-13.
+
+CRITICAL — Vague or uncommitted predictions: When an article's forward-looking content consists mainly of statements like "Bitcoin COULD go up OR down," "it may continue declining OR recover," or seasonality-based projections with no strong directional conviction, treat this as bearish or strongly neutral (score 2-5), NOT bullish. The absence of strong bullish conviction IS a bearish signal in itself.
+
+CRITICAL — Historical-heavy articles: When an article is primarily a historical data review with only brief or weak forward-looking predictions at the end, score based on how compelling and directionally clear those predictions are. If the predictions are hedged and noncommittal (e.g., "may continue downtrend... could recover... may rise or correct"), score 2-3, not 10-12.
+
+CRITICAL — RSI near oversold (e.g., 31): This is NOT a bullish signal by itself. In a downtrend, RSI approaching oversold means the asset IS declining, not that it will rebound. Only treat it as a potential rebound signal if the article explicitly frames it that way AND other bullish signals confirm. If the article presents RSI ~31 alongside whale inactivity and large holder selling, this is a BEARISH signal cluster → score 3-5.
+
+CRITICAL — Whale inactivity / "staying flat": When whales are not accumulating and large holder netflow drops sharply (e.g., -600%), this is a BEARISH signal, not neutral. It signals reduced buying interest and potential for further downside.
+
+CRITICAL — Fear & Greed Index at "Extreme Fear": This is a bearish/negative sentiment signal. Even if an analyst frames it as a contrarian buy opportunity, the presence of extreme fear alongside other uncertainty signals (low volume, geopolitical headwinds) should weigh on the score.
+
+CRITICAL — Low trading volume + low liquidations: These are bearish signals for near-term price action. They indicate lack of momentum and reduce the bullish score even when long-term targets are optimistic.
+
+CRITICAL — Multi-asset articles (BTC + ETH + SOL etc.): When an article covers multiple cryptocurrencies, score based on the Bitcoin-specific forward-looking sentiment. If Bitcoin's outlook is described as consolidating near highs with institutional accumulation, multiple analysts predicting upside moves to $140K+, and macro tailwinds present — even with some caution about timing — this is bullish (13-14), not neutral.
+
+CRITICAL — "Mixed/balanced" scoring trap: Do not default to neutral (6-10) simply because an article presents both bullish and bearish possibilities. If the article's overall weight of evidence, number of analysts, and price targets lean clearly in one direction, score accordingly. An article that says "here are two paths: $130K upside or $77K downside, but I think range-bound" with whale inactivity and declining netflows is bearish-leaning (score 4-6), not neutral.
+
+CRITICAL — Consolidation + "big move ahead" framing: When multiple analysts describe Bitcoin as being in a "key consolidation phase" with institutional accumulation, ETF support, regulatory tailwinds, and price targets of $140K+, this is a bullish setup even if the timing is uncertain. Score 13-14 depending on strength of consensus and number of supporting factors.
+
+CRITICAL — Uncertainty and fear as bearish weight: When an article cites multiple sources of uncertainty (geopolitical events, Fed decisions pending, regulatory pushback, market fear indicators), these are meaningful bearish signals even if the article also presents bullish long-term targets. Give real weight to the fear/uncertainty, especially when it is described as the dominant near-term force.
+
+Score 13 vs 14 distinction:
+- Score 14: Broad bullish consensus across multiple analysts, multiple upside targets, supportive macro/institutional factors, with risks mentioned only vaguely or briefly. Consolidation articles where the dominant message is "big move higher likely" with specific upside targets and strong supporting catalysts score 14.
+- Score 13: Bullish signals dominate but there is one meaningful, specific downside scenario with a concrete trigger and price target (e.g., "if $108,000 breaks, bearish structure forms") that is given real weight alongside the bullish case.
+
+Score 12 vs 13 distinction: Score 13 when bullish signals dominate but there is one meaningful caveat. Score 12 when the article is more mixed — e.g., short-term bearish technical patterns alongside long-term bullish structure, or when the bullish case is conditional on a bottom forming rather than being asserted with confidence.
+
+Score 11 vs 12 distinction: Score 12 when article leans bullish with balanced risk treatment. Score 11 when significant fear indicators, low volume, geopolitical uncertainty, or market hesitation are cited alongside bullish long-term targets — giving the article a "hopeful but nervous" tone rather than confident bullishness.
+
+Score 7 vs 8 distinction: Score 8 when the article has mildly bullish elements but is weighed down by significant bearish signals (whale inactivity, selling pressure, downside risk). Score 7 when the article is genuinely balanced or trying to present both sides without a clear lean.
+
+Technical patterns matter: A "death cross" or "rising wedge" mentioned as a forward-looking bearish signal reduces the score even if the overall tone is bullish. A "golden cross" or "bull flag" adds to bullish score. However, contextualization matters — if the article frames bearish technicals as historically weak signals or local bottoms, the reduction should be modest.
+
+Respond with only: {"score": <integer 1-15>}
+Iteration 8: New subsample score 0.75 is not better than old score 0.75, skipping
+Iteration 9: Selected program 6 score: 0.7916666666666666
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 1/9; sleeping 2.9s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 2/9; sleeping 5.7s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 3/9; sleeping 9.5s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 4/9; sleeping 16.2s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 5/9; sleeping 30.7s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+Iteration 9: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Scoring guidelines:
+- Score 15 (strongly bullish): Article is overwhelmingly bullish with multiple high price targets, strong institutional backing, macro tailwinds, and nearly universal upside expectations. Example: Article predicts $45K by March with multiple supporting factors including ETF hopes, rate cuts, investor withdrawals from exchanges, and broader market enthusiasm — all pointing uniformly upward.
+- Score 14 (very bullish): Article is broadly bullish with many supporting forecasts and upside catalysts, but may acknowledge some risks or uncertainties without giving them much weight. Example: Article predicts Bitcoin reaching $200,000–$300,000 in 2025 with multiple institutional forecasts, ETF inflows, and corporate treasury diversification as catalysts — risks mentioned but not emphasized. Also applies when multiple analysts predict "a big move is likely ahead" with consolidation patterns suggesting upside, strong institutional accumulation signals, and macro tailwinds — even if the article maintains some caution about timing.
+- Score 13 (bullish): Article is clearly bullish with solid forward-looking upside, but hedges somewhat or includes notable caveats/risks alongside the optimism. Example: Multiple bullish indicators and upside targets present, but article also highlights a meaningful downside scenario (e.g., "if key support breaks, price could fall 14-22%") or significant technical concerns that are given real weight.
+- Score 12 (moderately bullish): Article leans bullish but with more balanced treatment of risks, or bullish signals are present but conditional/uncertain.
+- Score 8 (weakly neutral): Article presents a mixed outlook with some mildly bullish signals but also significant bearish signals — e.g., whale inactivity, RSI near oversold but still declining, range-bound expectations with downside risk scenarios given real weight.
+- Score 7 (neutral, slightly bearish lean): Article presents multiple sides with no clear directional conviction, or explicitly tries to balance bullish and bearish cases without a dominant lean. Multi-asset articles covering BTC, ETH, and others where Bitcoin-specific sentiment is mixed or unclear may score here.
+- Score 4 (bearish): Multiple bearish indicators cited, whales reducing activity, large holders selling, downside price targets given real weight, bearish technical patterns confirmed.
+- Score 3 (bearish): Multiple strong bearish indicators, analyst warnings, downside targets cited, and defensive market positioning. Bears targeting lower price levels with technical indicators confirming downside.
+
+Key scoring factors to weigh:
+1. Number and magnitude of bullish vs. bearish price targets
+2. Institutional and expert consensus direction
+3. Macro factors cited (rate cuts = bullish; rate hikes/inflation = bearish; stable rates with improving macro = mildly bullish)
+4. On-chain signals: exchange outflows/accumulation = bullish; inflows/selling = bearish; whale inactivity/flat = bearish signal
+5. Technical indicators: RSI oversold in downtrend = bearish continuation (NOT bullish rebound signal unless confirmed); healthy RSI with uptrend = bullish; golden cross = bullish; death cross = bearish
+6. Market sentiment indicators (Fear & Greed, derivatives positioning)
+7. Geopolitical/regulatory risks as headwinds (tariffs, macro uncertainty = bearish pressure)
+8. ETF inflows and institutional adoption signals = bullish
+9. Whale/large holder behavior: accumulation = bullish; selling or flat/inactive = bearish
+10. Investor behavior: withdrawing BTC from exchanges (self-custody) = strongly bullish signal
+11. Consolidation with low volatility + institutional accumulation + analyst predictions of "big move ahead" = bullish (score 13-14)
+
+Calibration notes:
+- When an article uniformly points upward across ALL dimensions (price targets, macro, on-chain, sentiment, institutional) with little to no bearish counterweight, score at the maximum end (15).
+- Do not discount bullish scores merely because the article mentions general risks — only reduce score if those risks are given significant forward-looking weight.
+- A "cautiously optimistic" article with strong upside targets but acknowledged volatility risks scores around 13-14, not 15.
+- An article where bears are clearly in control with downside targets and defensive positioning scores 2-4.
+- An article that uses phrases like "cautiously optimistic" or "no prediction can be guaranteed" but whose entire analytical framework (multiple models, multiple indicators, multiple analysts) all point strongly bullish should score 14-15, not 13. Hedging language alone does not reduce the score — what matters is whether the forward-looking substance is uniformly bullish.
+- When an article presents ONLY bullish price targets from multiple named analysts/models (e.g., $120K, $200K, $500K, $1M) with NO concrete bearish price targets, and ALL technical/on-chain/macro indicators cited are bullish, score 14-15 even if the conclusion uses mild hedging language.
+- When an article has a large number of specific bullish forecasts from multiple credible sources (institutional analysts, named traders, quantitative models) all pointing to significant upside, and the bearish section consists only of generic risk categories (regulation, competition, volatility) without specific downside price targets, score 14-15.
+
+CRITICAL — Distinguishing 13 vs 14 vs 15:
+- Score 15: ALL forward-looking signals point bullish. No meaningful bearish content. Every analyst, indicator, and factor cited supports upside. Zero concrete downside scenarios.
+- Score 14: Overwhelmingly bullish with multiple specific upside targets and supporting catalysts. Risks are mentioned only as generic categories (e.g., "regulatory uncertainty," "market volatility") WITHOUT specific downside price targets or bearish analyst forecasts. The bullish case dominates completely.
+- Score 13: Clearly bullish but includes at least one SPECIFIC, CONCRETE bearish scenario with a named trigger and/or price target (e.g., "if $108K breaks, bearish structure forms and price could fall to $95K") that is given real weight in the article.
+
+The key distinction between 13 and 14: Generic risk mentions (volatility, regulation, competition) = score 14. Specific downside price targets or named bearish analysts = score 13.
+
+CRITICAL — RSI near oversold (e.g., 31): This is NOT a bullish signal by itself. In a downtrend, RSI approaching oversold means the asset IS declining, not that it will rebound. Only treat it as a potential rebound signal if the article explicitly frames it that way AND other bullish signals confirm. If the article presents RSI ~31 alongside whale inactivity and large holder selling, this is a BEARISH signal cluster → score 3-5.
+
+CRITICAL — Whale inactivity / "staying flat": When whales are not accumulating and large holder netflow drops sharply (e.g., -600%), this is a BEARISH signal, not neutral. It signals reduced buying interest and potential for further downside.
+
+CRITICAL — Multi-asset articles (BTC + ETH + SOL etc.): When an article covers multiple cryptocurrencies, score based on the Bitcoin-specific forward-looking sentiment. If Bitcoin's outlook is described as consolidating near highs with institutional accumulation, multiple analysts predicting upside moves to $140K+, and macro tailwinds present — even with some caution about timing — this is bullish (13-14), not neutral.
+
+CRITICAL — "Mixed/balanced" scoring trap: Do not default to neutral (6-10) simply because an article presents both bullish and bearish possibilities. If the article's overall weight of evidence, number of analysts, and price targets lean clearly in one direction, score accordingly. An article that says "here are two paths: $130K upside or $77K downside, but I think range-bound" with whale inactivity and declining netflows is bearish-leaning (score 4-6), not neutral.
+
+CRITICAL — Consolidation + "big move ahead" framing: When multiple analysts describe Bitcoin as being in a "key consolidation phase" with institutional accumulation, ETF support, regulatory tailwinds, and price targets of $140K+, this is a bullish setup even if the timing is uncertain. Score 13-14 depending on strength of consensus and number of supporting factors.
+
+CRITICAL — Do not over-penalize hedging language: Articles written by exchanges, blogs, or analysts that use cautious framing ("no prediction is guaranteed," "investors should remain vigilant," "cautiously optimistic") while presenting exclusively bullish analytical content should NOT be scored lower than 14. The forward-looking analytical substance determines the score, not the disclaimer language.
+
+CRITICAL — Multiple models all pointing bullish = 14-15: When an article reviews 5+ analytical models (e.g., Stock-to-Flow, RSI, 200WMA, Realized Price, Market Cycle Analysis) and ALL of them point to continued price increases with specific upside targets (e.g., $120K, $200K, $500K), this convergence of multiple bullish frameworks is a strong signal for 14-15, not 13. The presence of a "Conclusion" section with mild hedging does not override the uniformly bullish analytical content.
+
+Score 13 vs 14 distinction:
+- Score 14: Broad bullish consensus across multiple analysts, multiple upside targets, supportive macro/institutional factors, with risks mentioned only vaguely or briefly as generic categories without specific downside price targets. Consolidation articles where the dominant message is "big move higher likely" with specific upside targets and strong supporting catalysts score 14. Articles reviewing multiple analytical frameworks all pointing to significant upside with no concrete bearish price targets score 14.
+- Score 13: Bullish signals dominate but there is one meaningful, specific downside scenario with a concrete trigger and price target (e.g., "if $108,000 breaks, bearish structure forms") that is given real weight alongside the bullish case.
+
+Score 12 vs 13 distinction: Score 13 when bullish signals dominate but there is one meaningful caveat. Score 12 when the article is more mixed — e.g., short-term bearish technical patterns alongside long-term bullish structure, or when the bullish case is conditional on a bottom forming rather than being asserted with confidence.
+
+Score 7 vs 8 distinction: Score 8 when the article has mildly bullish elements but is weighed down by significant bearish signals (whale inactivity, selling pressure, downside risk). Score 7 when the article is genuinely balanced or trying to present both sides without a clear lean.
+
+Technical patterns matter: A "death cross" or "rising wedge" mentioned as a forward-looking bearish signal reduces the score even if the overall tone is bullish. A "golden cross" or "bull flag" adds to bullish score. However, contextualization matters — if the article frames bearish technicals as historically weak signals or local bottoms, the reduction should be modest.
+
+Respond with only: {"score": <integer 1-15>}
+Iteration 9: New subsample score 2.75 is better than old score 2.25. Continue to full eval and add to candidate pool.
+Iteration 9: Valset score for new program: 0.7916666666666666 (coverage 6 / 6)
+Iteration 9: Val aggregate for new program: 0.7916666666666666
+Iteration 9: Individual valset scores for new program: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 0.75, 5: 0.5}
+Iteration 9: New valset pareto front scores: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.5}
+Iteration 9: Valset pareto front aggregate score: 0.8333333333333334
+Iteration 9: Updated valset pareto front programs: {0: {0, 1, 2, 4, 5, 6, 7}, 1: {1, 5, 6, 7}, 2: {0, 1, 2, 3, 4, 5, 6, 7}, 3: {0, 1, 2, 3, 4, 5, 6, 7}, 4: {0, 2, 3, 4}, 5: {0, 1, 2, 5, 6, 7}}
+Iteration 9: Best valset aggregate score so far: 0.7916666666666666
+Iteration 9: Best program as per aggregate score on valset: 0
+Iteration 9: Best score on valset: 0.7916666666666666
+Iteration 9: Linear pareto front program index: 0
+Iteration 9: New program candidate index: 7
+Iteration 10: Selected program 2 score: 0.7916666666666666
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.1s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.1s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.9s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.3s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 10: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Scoring guidelines:
+- Score based on the net balance of bullish vs. bearish forward-looking signals.
+- When an article presents a primarily bullish outlook but includes meaningful risk factors, hedging language, fear indicators (e.g., Fear & Greed Index in "Extreme Fear"), declining volume, low liquidations, or macro uncertainty (e.g., tariff risks, government shutdowns, regulatory risk), reduce the score by 1 compared to what a purely bullish reading would suggest.
+- When an article presents a primarily bearish outlook but includes some mitigating bullish scenarios or recovery possibilities, increase the score by 1 compared to what a purely bearish reading would suggest.
+- Double-top patterns, head-and-shoulders patterns, and similar bearish technical chart patterns are moderately bearish signals, not strongly bearish.
+- Historical seasonal patterns (e.g., "Uptober," Q4 strength) count as forward-looking signals only if the article frames them as expectations for the future.
+- Stock-to-Flow model projections, RSI-based outlooks, and moving average targets count as forward-looking bullish signals.
+- Price targets in the $100K–$115K range for Bitcoin within a cycle are moderately bullish (score ~13), not strongly bullish (15), unless the article is unambiguously euphoric with no caveats.
+- Price targets significantly above $115K (e.g., $150K–$170K) within a cycle push toward score 14, but still reduce by 1 if meaningful caveats, risks, or mixed signals are present (landing at ~13).
+- Multiple converging bullish catalysts (e.g., ETF approval + halving + rate cuts together) represent a stronger bullish signal than any single catalyst alone, and can push the score toward 14.
+- Dying NFT demand, declining altcoin metrics, and bearish alt signals contribute modestly to a bearish Bitcoin sentiment score only if they reflect broader crypto market weakness.
+- Fear indicators (e.g., Fear & Greed Index at "Extreme Fear," investor panic, declining trading volume) are meaningful bearish signals even if the article frames them as potential contrarian opportunities.
+- Be precise: avoid overweighting either bullish or bearish signals. When in doubt about whether to round up or down, consider whether the article's overall tone and the weight of evidence lean more toward caution or confidence.
+
+Respond with only: {"score": <integer 1-15>}
+Iteration 10: New subsample score 2.5 is not better than old score 2.5, skipping
+Iteration 11: Selected program 2 score: 0.7916666666666666
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.6s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 11: All subsample scores perfect. Skipping.
+Iteration 11: Reflective mutation did not propose a new candidate
+Iteration 12: Selected program 7 score: 0.7916666666666666
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.0s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.9s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.6s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 4.9s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.1s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 4.4s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 3/9; sleeping 9.4s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 12: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Scoring guidelines:
+- Score 15 (strongly bullish): Article is overwhelmingly bullish with multiple high price targets, strong institutional backing, macro tailwinds, and nearly universal upside expectations. ALL forward-looking signals point bullish. No meaningful bearish content. Every analyst, indicator, and factor cited supports upside. Zero concrete downside scenarios.
+- Score 14 (very bullish): Article is broadly bullish with many supporting forecasts and upside catalysts. Risks are mentioned only as generic categories (e.g., "regulatory uncertainty," "market volatility") WITHOUT specific downside price targets or bearish analyst forecasts. The bullish case dominates completely. Also applies when multiple analysts predict "a big move is likely ahead" with consolidation patterns suggesting upside, strong institutional accumulation signals, and macro tailwinds — even if the article maintains some caution about timing.
+- Score 13 (bullish): Article is clearly bullish but includes at least one SPECIFIC, CONCRETE bearish scenario with a named trigger and/or price target (e.g., "if $108K breaks, bearish structure forms and price could fall to $95K") that is given real weight in the article. Multiple bullish indicators and upside targets present alongside a meaningful downside scenario.
+- Score 12 (moderately bullish): Article leans bullish but with more balanced treatment of risks, or bullish signals are present but conditional/uncertain. Short-term bearish technical patterns alongside long-term bullish structure, or the bullish case is conditional on a bottom forming rather than being asserted with confidence. Historical statistics suggesting upside but with known macro risks (e.g., government shutdown) that could cause meaningful corrections score here rather than 13.
+- Score 11 (weakly bullish): Article has a mild bullish lean but significant uncertainty or offsetting bearish factors prevent a clearer bullish call.
+- Score 10 (strongly neutral): Article presents a balanced outlook with no directional lean, equal weight given to bullish and bearish possibilities.
+- Score 8 (weakly neutral): Article presents a mixed outlook with some mildly bullish signals but also significant bearish signals — e.g., whale inactivity, RSI near oversold but still declining, range-bound expectations with downside risk scenarios given real weight.
+- Score 7 (neutral, slightly bearish lean): Article presents multiple sides with no clear directional conviction, or explicitly tries to balance bullish and bearish cases without a dominant lean. Multi-asset articles covering BTC, ETH, and others where Bitcoin-specific sentiment is mixed or unclear may score here.
+- Score 5 (weakly bearish): Bearish lean with some offsetting bullish factors.
+- Score 4 (bearish): Multiple bearish indicators cited, whales reducing activity, large holders selling, downside price targets given real weight, bearish technical patterns confirmed.
+- Score 3 (strongly bearish): Multiple strong bearish indicators, analyst warnings, downside targets cited, and defensive market positioning. Bears targeting lower price levels with technical indicators confirming downside. Articles describing "falling knife" scenarios, bearish MACD crossovers, RSI in oversold territory within a downtrend, and bears targeting specific lower price levels score here.
+- Score 2 (very strongly bearish): Overwhelmingly bearish with near-universal downside expectations, panic selling signals, and catastrophic downside scenarios.
+
+CRITICAL — Key distinction between 12 and 13:
+- Score 13: Bullish signals dominate AND there is a specific, concrete bearish scenario with a named trigger and/or downside price target given real weight.
+- Score 12: Article leans bullish but risks are more general/historical in nature, OR the bullish case depends on historical patterns that have known exceptions/risks that are given meaningful weight. An article citing strong historical statistics (e.g., "73% chance of positive month") alongside a known macro risk (e.g., government shutdown) that could cause ~30% drawdowns scores 12, not 13, because the bullish case is historically-driven and conditional rather than analyst-driven with strong conviction.
+
+CRITICAL — Multi-asset articles (BTC + ETH + XRP etc.): When an article covers multiple cryptocurrencies, score based on the Bitcoin-specific forward-looking sentiment. If Bitcoin's section is mixed — citing historical bullish statistics but also noting macro risks and possible corrective targets — score based on the net weight of Bitcoin-specific forward-looking content.
+
+CRITICAL — Historical statistics vs. analyst conviction: Articles that lean on historical return patterns ("October averages +27%") rather than named analyst forecasts are inherently more conditional. If such articles also acknowledge meaningful macro risks that could disrupt the historical pattern, the score should reflect that conditionality (12 rather than 13).
+
+---
+
+SCORING FACTORS — weigh ALL of these in your assessment:
+
+1. Number and magnitude of bullish vs. bearish price targets
+2. Institutional and expert consensus direction
+3. Macro factors cited (rate cuts = bullish; rate hikes/inflation = bearish; stable rates with improving macro = mildly bullish; tariffs/geopolitical tension = bearish)
+4. On-chain signals: exchange outflows/accumulation = bullish; inflows/selling = bearish; whale inactivity/flat = bearish signal
+5. Technical indicators:
+   - RSI oversold in downtrend = BEARISH continuation signal (NOT bullish rebound signal unless explicitly confirmed by other bullish factors)
+   - Healthy RSI with uptrend = bullish
+   - Golden cross = bullish; death cross = bearish
+   - MACD bearish crossover with rising red histogram = bearish
+   - "Falling knife" framing = bearish
+6. Market sentiment indicators (Fear & Greed, derivatives positioning)
+7. Geopolitical/regulatory risks as headwinds (tariffs, US-Iran tensions, macro uncertainty = bearish pressure)
+8. ETF inflows and institutional adoption signals = bullish; ETF outflows = bearish
+9. Whale/large holder behavior: accumulation = bullish; selling or flat/inactive = bearish
+10. Investor behavior: withdrawing BTC from exchanges (self-custody) = strongly bullish signal
+11. Derivatives market: defensive positioning, low futures premium, declining term structure = bearish
+12. Analyst warnings about "dead cat bounce," "hands-off approach," "false breakouts" = bearish signals
+13. Consolidation with low volatility + institutional accumulation + analyst predictions of "big move ahead" = bullish (score 13-14)
+
+---
+
+CALIBRATION NOTES:
+
+**On RSI:**
+- RSI ~26-31 (oversold) in a confirmed downtrend is a BEARISH signal, not bullish. It signals strong bearish momentum. Only treat as potential rebound if explicitly framed that way AND confirmed by other bullish signals.
+- MACD bearish crossover with rising red histogram reinforces bearish outlook.
+
+**On whale/institutional behavior:**
+- Whale inactivity or "staying flat" = BEARISH, not neutral.
+- ETF outflows ($1.6B monthly) = bearish pressure on price.
+- Defensive derivatives positioning (low futures premium, declining term structure) = bearish.
+
+**On hedging language:**
+- Do NOT reduce score merely because article uses cautious framing ("no prediction is guaranteed," "cautiously optimistic"). What matters is the forward-looking analytical substance.
+- However, DO reduce score if the bullish case is primarily based on historical statistics rather than named analyst conviction, especially when meaningful macro risks are explicitly acknowledged.
+
+**On "dead cat bounce" framing:**
+- When an article explicitly frames short-term recovery attempts as likely "dead cat bounces" within a broader downtrend, this is a bearish signal that should push the score toward 3-4.
+
+**On multiple models/analysts all pointing bullish:**
+- When 5+ analytical models (Stock-to-Flow, RSI, 200WMA, etc.) or multiple named analysts all point to significant upside with specific targets and no concrete downside scenarios, score 14-15.
+- Generic risk mentions without specific downside targets = score 14.
+- One or more specific downside price targets with named triggers = score 13.
+
+**On consolidation + "big move ahead":**
+- When multiple analysts describe Bitcoin as being in a "key consolidation phase" with institutional accumulation, ETF support, regulatory tailwinds, and upside price targets, score 13-14 depending on strength of consensus.
+
+**Distinguishing bearish scores (3 vs. 4 vs. 5):**
+- Score 3: Strong bearish indicators throughout — specific downside targets, defensive derivatives, bearish technicals confirmed (oversold RSI in downtrend + MACD bearish crossover), falling knife framing, analyst warnings. Little to no bullish forward-looking content.
+- Score 4: Multiple bearish indicators but some offsetting factors or less extreme technical picture.
+- Score 5: Bearish lean with meaningful bullish counterweights.
+
+**Distinguishing bullish scores (13 vs. 14 vs. 15):**
+- Score 15: ALL forward-looking signals point bullish. Zero concrete downside scenarios. Every indicator and analyst cited supports upside.
+- Score 14: Overwhelmingly bullish. Risks mentioned only as generic categories without specific downside price targets. Bullish case dominates completely.
+- Score 13: Clearly bullish but includes at least one specific, concrete bearish scenario with a named trigger and/or downside price target given real weight.
+
+**Distinguishing 12 vs. 13:**
+- Score 13: Bullish signals dominate with strong analyst conviction AND specific downside scenario with concrete trigger/target.
+- Score 12: Bullish lean based on historical patterns or conditional factors, with acknowledged macro/geopolitical risks that could cause meaningful corrections. Less conviction than 13.
+
+**Mixed/balanced scoring trap:**
+- Do NOT default to neutral (6-10) simply because an article presents both bullish and bearish possibilities. If the article's overall weight of evidence leans clearly in one direction, score accordingly.
+- An article presenting "$130K upside or $77K downside" with whale inactivity and declining netflows is bearish-leaning (score 4-6), not neutral.
+
+Respond with only: {"score": <integer 1-15>}
+Iteration 12: New subsample score 3.0 is better than old score 2.75. Continue to full eval and add to candidate pool.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.2s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.1s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 12: Valset score for new program: 0.75 (coverage 6 / 6)
+Iteration 12: Val aggregate for new program: 0.75
+Iteration 12: Individual valset scores for new program: {0: 0.5, 1: 0.75, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.5}
+Iteration 12: New valset pareto front scores: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.5}
+Iteration 12: Valset pareto front aggregate score: 0.8333333333333334
+Iteration 12: Updated valset pareto front programs: {0: {0, 1, 2, 4, 5, 6, 7}, 1: {1, 5, 6, 7}, 2: {0, 1, 2, 3, 4, 5, 6, 7, 8}, 3: {0, 1, 2, 3, 4, 5, 6, 7, 8}, 4: {0, 2, 3, 4, 8}, 5: {0, 1, 2, 5, 6, 7, 8}}
+Iteration 12: Best valset aggregate score so far: 0.7916666666666666
+Iteration 12: Best program as per aggregate score on valset: 0
+Iteration 12: Best score on valset: 0.7916666666666666
+Iteration 12: Linear pareto front program index: 0
+Iteration 12: New program candidate index: 8
+Iteration 13: Selected program 7 score: 0.7916666666666666
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.9s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.7s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.0s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.1s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.9s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.8s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 2/9; sleeping 4.5s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 3/9; sleeping 9.7s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 4/9; sleeping 17.1s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 5/9; sleeping 31.1s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 6/9; sleeping 30.2s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 7/9; sleeping 30.4s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] Timeout on attempt 8/9; sleeping 31.8s. Details: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+Iteration 13: Exception during reflection/proposal: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+Traceback (most recent call last):
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpx/_transports/default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpcore/_sync/connection_pool.py", line 256, in handle_request
+    raise exc from None
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpcore/_sync/connection_pool.py", line 236, in handle_request
+    response = connection.handle_request(
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpcore/_sync/connection.py", line 103, in handle_request
+    return self._connection.handle_request(request)
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpcore/_sync/http11.py", line 136, in handle_request
+    raise exc
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpcore/_sync/http11.py", line 106, in handle_request
+    ) = self._receive_response_headers(**kwargs)
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpcore/_sync/http11.py", line 177, in _receive_response_headers
+    event = self._receive_event(timeout=timeout)
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpcore/_sync/http11.py", line 217, in _receive_event
+    data = self._network_stream.read(
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpcore/_backends/sync.py", line 126, in read
+    with map_exceptions(exc_map):
+  File "/Users/user1/.local/share/uv/python/cpython-3.10-macos-aarch64-none/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ReadTimeout: The read operation timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/litellm/llms/custom_httpx/http_handler.py", line 1075, in post
+    response = self.client.send(req, stream=stream)
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpx/_client.py", line 914, in send
+    response = self._send_handling_auth(
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpx/_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpx/_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpx/_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpx/_transports/default.py", line 249, in handle_request
+    with map_httpcore_exceptions():
+  File "/Users/user1/.local/share/uv/python/cpython-3.10-macos-aarch64-none/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ReadTimeout: The read operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/litellm/llms/anthropic/chat/handler.py", line 481, in completion
+    response = client.post(
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/litellm/llms/custom_httpx/http_handler.py", line 1079, in post
+    raise litellm.Timeout(
+litellm.exceptions.Timeout: litellm.Timeout: Connection timed out after 60.0 seconds.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/litellm/main.py", line 2870, in completion
+    response = anthropic_chat_completions.completion(
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/litellm/llms/anthropic/chat/handler.py", line 497, in completion
+    raise AnthropicError(
+litellm.llms.anthropic.common_utils.AnthropicError: litellm.Timeout: Connection timed out after 60.0 seconds.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 297, in propose
+    new_texts = self.propose_new_texts(curr_prog, reflective_dataset, predictor_names_to_update)
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 128, in propose_new_texts
+    new_texts[name] = InstructionProposalSignature.run(
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/gepa/proposer/reflective_mutation/base.py", line 48, in run
+    lm_res = lm(full_prompt)
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/scripts/run_gepa_rate_limited.py", line 251, in _call
+    response = _completion_with_retries(
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/scripts/run_gepa_rate_limited.py", line 200, in _completion_with_retries
+    raise last_err
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/scripts/run_gepa_rate_limited.py", line 180, in _completion_with_retries
+    return litellm.completion(
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/litellm/utils.py", line 1772, in wrapper
+    raise e
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/litellm/utils.py", line 1593, in wrapper
+    result = original_function(*args, **kwargs)
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/litellm/main.py", line 4412, in completion
+    raise exception_type(
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py", line 2456, in exception_type
+    raise e
+  File "/Users/sandbox/Market_Prediction_DL_Final_Project/.venv/lib/python3.10/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py", line 713, in exception_type
+    raise Timeout(
+litellm.exceptions.Timeout: litellm.Timeout: AnthropicException - litellm.Timeout: Connection timed out after 60.0 seconds.
+
+Iteration 13: Reflective mutation did not propose a new candidate
+Iteration 14: Selected program 2 score: 0.7916666666666666
+Iteration 14: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Scoring guidelines:
+- Score based on the net balance of bullish vs. bearish forward-looking signals.
+- When an article presents a primarily bullish outlook but includes meaningful risk factors or hedging language (e.g., government shutdowns, regulatory risk, macro uncertainty, tariff fears), reduce the score by 1 compared to what a purely bullish reading would suggest.
+- When an article presents a primarily bearish outlook but includes some mitigating bullish scenarios or recovery possibilities, increase the score by 1 compared to what a purely bearish reading would suggest.
+- Double-top patterns, head-and-shoulders patterns, and similar bearish technical chart patterns are moderately bearish signals, not strongly bearish.
+- Historical seasonal patterns (e.g., "Uptober," Q4 strength) count as forward-looking signals only if the article frames them as expectations for the future.
+- Stock-to-Flow model projections, RSI-based outlooks, and moving average targets count as forward-looking bullish signals.
+- Price targets in the $100K–$140K range for Bitcoin within a cycle are moderately bullish (score ~13–14), not strongly bullish (15), unless the article is unambiguously euphoric with no caveats.
+- Price targets above $140K with strong institutional backing, multiple analyst consensus, and minimal caveats may warrant a score of 14–15.
+- Dying NFT demand, declining altcoin metrics, and bearish alt signals contribute modestly to a bearish Bitcoin sentiment score only if they reflect broader crypto market weakness.
+- Weak or hedged language ("could," "may," "might," "is likely to") significantly reduces the strength of any bullish or bearish signal. Articles using heavily hedged language should not score above 12 even if the direction is bullish.
+- Articles that focus primarily on uncertainty, macro risks (Fed decisions, geopolitical events, unemployment data), or mixed technical signals (some buy, some sell indicators) should score in the neutral-to-bearish range (4–8), not the bullish range.
+- When technical indicators are mixed (e.g., some EMAs say "Buy" but Hull MA and VWAP say "Sell"), treat the net signal as neutral or weakly directional.
+- Articles predicting near-term continued downtrends before any potential recovery should be scored bearish (1–5), not neutral or bullish, even if a recovery is mentioned later.
+- Consolidation phases with "big move either way" framing (could go up OR down) are neutral-to-mildly bullish depending on the balance of supporting evidence. If institutional accumulation and bullish price targets are emphasized alongside the uncertainty, lean bullish (12–13).
+- If an article's forward-looking content is sparse, vague, or mostly framed around caution and uncertainty, score conservatively in the bearish-to-neutral range (3–7).
+- Calibrate carefully: avoid overweighting either bullish or bearish signals. Aim for the most precise integer on the scale.
+
+Domain-specific calibration notes:
+- "Market sentiment veering towards greed" combined with macro uncertainty (Fed decisions, geopolitical risks like Evergrande fallout) and mixed technicals is a net bearish signal — score 2–4.
+- Seasonal analysis predicting a near-term drop in September before a possible October recovery is net bearish for the immediate forward period — score 2–3.
+- Multiple analysts citing price targets of $140K with institutional accumulation, ETF inflows, and regulatory clarity as tailwinds, even with some macro risks, is strongly bullish — score 13–14.
+
+Respond with only: {"score": <integer 1-15>}
+Iteration 14: New subsample score 1.0 is better than old score 0.75. Continue to full eval and add to candidate pool.
+Iteration 14: Found a better program on the valset with score 0.8333333333333334.
+Iteration 14: Valset score for new program: 0.8333333333333334 (coverage 6 / 6)
+Iteration 14: Val aggregate for new program: 0.8333333333333334
+Iteration 14: Individual valset scores for new program: {0: 0.75, 1: 0.75, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.75}
+Iteration 14: New valset pareto front scores: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.75}
+Iteration 14: Valset pareto front aggregate score: 0.875
+Iteration 14: Updated valset pareto front programs: {0: {0, 1, 2, 4, 5, 6, 7, 9}, 1: {1, 5, 6, 7}, 2: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, 3: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, 4: {0, 2, 3, 4, 8, 9}, 5: {9}}
+Iteration 14: Best valset aggregate score so far: 0.8333333333333334
+Iteration 14: Best program as per aggregate score on valset: 9
+Iteration 14: Best score on valset: 0.8333333333333334
+Iteration 14: Linear pareto front program index: 9
+Iteration 14: New program candidate index: 9
+Iteration 15: Selected program 9 score: 0.8333333333333334
+Iteration 15: Proposed new text for system_prompt: You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Respond with ONLY a JSON object in this exact format: {"score": <integer 1-15>}
+Do not include any explanation, reasoning, or other text — only the JSON object.
+
+---
+
+SCORING GUIDELINES:
+
+General balance:
+- Score based on the net balance of bullish vs. bearish forward-looking signals.
+- When an article presents a primarily bullish outlook but includes meaningful risk factors or hedging language (e.g., government shutdowns, regulatory risk, macro uncertainty, tariff fears), reduce the score by 1 compared to what a purely bullish reading would suggest.
+- When an article presents a primarily bearish outlook but includes some mitigating bullish scenarios or recovery possibilities, increase the score by 1 compared to what a purely bearish reading would suggest.
+
+Language strength:
+- Weak or hedged language ("could," "may," "might," "is likely to") significantly reduces the strength of any bullish or bearish signal. Articles using heavily hedged language should not score above 12 even if the direction is bullish.
+- Strong, confident language ("will," "is set to," "expects") increases the strength of signals.
+
+Technical signals:
+- Double-top patterns, head-and-shoulders patterns, and similar bearish technical chart patterns are moderately bearish signals, not strongly bearish.
+- When technical indicators are mixed (e.g., some EMAs say "Buy" but Hull MA and VWAP say "Sell"), treat the net signal as neutral or weakly directional.
+- Stock-to-Flow model projections, RSI-based outlooks, and moving average targets count as forward-looking bullish signals.
+- MACD below zero, RSI oversold/overbought readings used bearishly, and broken support levels are bearish technical signals.
+
+Seasonal and cycle patterns:
+- Historical seasonal patterns (e.g., "Uptober," Q4 strength) count as forward-looking signals only if the article frames them as expectations for the future.
+- Seasonal analysis predicting a near-term drop (e.g., "Red September") before a possible later recovery is net bearish for the immediate forward period — score 2–4.
+- Articles predicting near-term continued downtrends before any potential recovery should be scored bearish (1–5), not neutral or bullish, even if a recovery is mentioned later.
+
+Price targets:
+- Price targets in the $100K–$140K range for Bitcoin within a cycle are moderately bullish (score ~13–14), not strongly bullish (15), unless the article is unambiguously euphoric with no caveats.
+- Price targets above $140K with strong institutional backing, multiple analyst consensus, and minimal caveats may warrant a score of 14–15.
+- Multiple analysts citing price targets of $140K+ with institutional accumulation, ETF inflows, and regulatory clarity as tailwinds, even with some macro risks, is strongly bullish — score 13–14.
+
+Sentiment types:
+- "Market sentiment veering towards greed" combined with macro uncertainty and mixed technicals is a net bearish signal — score 2–4.
+- Consolidation phases with "big move either way" framing are neutral-to-mildly bullish depending on supporting evidence. If institutional accumulation and bullish price targets are emphasized, lean bullish (12–13).
+- If an article's forward-looking content is sparse, vague, or mostly framed around caution and uncertainty, score conservatively in the bearish-to-neutral range (3–7).
+- Articles that focus primarily on uncertainty, macro risks (Fed decisions, geopolitical events, unemployment data), or mixed technical signals should score in the neutral-to-bearish range (4–8), not the bullish range.
+
+Other signals:
+- Dying NFT demand, declining altcoin metrics, and bearish alt signals contribute modestly to a bearish Bitcoin sentiment score only if they reflect broader crypto market weakness.
+- Whale accumulation signals are bullish; ETF outflows are bearish institutional signals.
+- Fed rate cut expectations are bullish macro tailwinds.
+
+---
+
+CRITICAL CALIBRATION RULES (based on observed errors):
+
+1. NEAR-TERM BEARISH FRAMING OVERRIDES LONG-TERM BULLISHNESS:
+   - If an article is structured around "how low can it go" or "why is Bitcoin falling," even if it includes some long-term bullish targets, the near-term bearish framing dominates. Score in the bearish range (2–5), not neutral or bullish.
+   - Example: An article predicting a September drop to $100K before a later rally should score ~4, not 10.
+
+2. ARTICLES WITH MIXED OR CONFLICTING SIGNALS THAT "ARGUE WITH THEMSELVES":
+   - If an article presents roughly equal bullish and bearish cases without a clear net direction, score in the neutral range (6–9), not bullish.
+   - Do not interpret the presence of bullish price targets as automatically making an article bullish if those targets are heavily hedged or counterbalanced by equally strong bearish signals.
+
+3. COMPREHENSIVE BULLISH ARTICLES WITH MULTIPLE ANALYST CONSENSUS:
+   - An article with many technical reasons for bullishness (whale accumulation, RSI in healthy range, negative funding rates suggesting room to run, bullish on-chain signals, multiple institutional forecasts in the $120K–$200K range, ETF inflows) should score 13–14, not 12–13.
+   - The presence of a standard risk section (regulatory, macro, leverage) does not by itself warrant dropping below 13 if the overall article is comprehensively bullish.
+
+4. DO NOT OVER-PENALIZE FOR STANDARD RISK DISCLOSURES:
+   - Most bullish articles include a boilerplate risk section. Only reduce the score for risks if they are presented as genuinely meaningful threats given current conditions, not just standard disclaimers.
+
+5. ALTCOIN-FOCUSED ARTICLES:
+   - If an article covers multiple cryptocurrencies (BTC, ETH, XRP) and does not give a clear net bullish or bearish signal for Bitcoin specifically, score in the neutral range (6–9).
+   - Do not score such articles as bullish just because Bitcoin is included or because some assets have bullish targets.
+
+6. SEPTEMBER / RED MONTH ARTICLES:
+   - Articles asking "how low can Bitcoin go" in a historically weak month, even with some bullish counterarguments, should score bearish (3–5), reflecting the dominant near-term bearish framing.
+
+---
+
+DOMAIN-SPECIFIC CALIBRATION EXAMPLES:
+
+- Comprehensive bullish article with many analyst forecasts ($120K–$200K), strong on-chain data (whale accumulation score ~0.88–1.0), ETF inflows ($3B+/week), healthy RSI, negative funding rates (room to run), multiple institutional voices, and a standard risk section → score 13–14.
+- Article framed around near-term September weakness, broken support, MACD below zero, seasonal bearish patterns, ETF outflows, even with some bullish counterarguments (whale accumulation, Tom Lee $120K target, 2017 analogy) → score 3–5.
+- Article covering BTC, ETH, XRP with mixed signals for each, no clear net direction, hedged language throughout → score 6–8.
+- "Market sentiment veering towards greed" + macro uncertainty + mixed technicals → score 2–4.
+- Seasonal analysis predicting near-term drop before October recovery → score 2–3.
+- Multiple analysts citing $140K+ with institutional accumulation, ETF inflows, regulatory clarity, minimal caveats → score 13–15.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.7s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.0s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 3/9; sleeping 8.7s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.5s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 4.6s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 15: New subsample score 1.5 is better than old score 0.75. Continue to full eval and add to candidate pool.
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.3s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.6s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.3s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 4.9s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.4s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 3.4s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 1/9; sleeping 2.2s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 2/9; sleeping 5.1s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[WARN] RateLimitError on attempt 3/9; sleeping 9.1s. Details: litellm.RateLimitError: AnthropicException - {"type":"error","error":{"type":"rate_limit_error","message":"This request would exceed your organization's rate li
+Iteration 15: Valset score for new program: 0.7916666666666666 (coverage 6 / 6)
+Iteration 15: Val aggregate for new program: 0.7916666666666666
+Iteration 15: Individual valset scores for new program: {0: 0.5, 1: 0.75, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.75}
+Iteration 15: New valset pareto front scores: {0: 0.75, 1: 1.0, 2: 0.75, 3: 1.0, 4: 1.0, 5: 0.75}
+Iteration 15: Valset pareto front aggregate score: 0.875
+Iteration 15: Updated valset pareto front programs: {0: {0, 1, 2, 4, 5, 6, 7, 9}, 1: {1, 5, 6, 7}, 2: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 3: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 4: {0, 2, 3, 4, 8, 9, 10}, 5: {9, 10}}
+Iteration 15: Best valset aggregate score so far: 0.8333333333333334
+Iteration 15: Best program as per aggregate score on valset: 9
+Iteration 15: Best score on valset: 0.8333333333333334
+Iteration 15: Linear pareto front program index: 9
+Iteration 15: New program candidate index: 10
+
+[INFO] Done. Best prompt saved to 'outputs/gepa_runs/gepa_result_claude_sonnet46.json'.
+
+=== Best GEPA Prompt ===
+You are a Bitcoin sentiment analyst. Score the forward-looking sentiment of a Bitcoin news article on a scale of 1 to 15.
+
+Bearish range  (1-5):   1 = very weakly bearish  ... 5 = strongly bearish
+Neutral range  (6-10):  6 = very weakly neutral   ... 10 = strongly neutral
+Bullish range (11-15): 11 = very weakly bullish   ... 15 = strongly bullish
+
+Only consider forward-looking content: predictions, forecasts, price targets, analyst outlooks, and future expectations.
+Ignore all retrospective content: past price performance, historical data, and anything describing what already happened.
+
+Scoring guidelines:
+- Score based on the net balance of bullish vs. bearish forward-looking signals.
+- When an article presents a primarily bullish outlook but includes meaningful risk factors or hedging language (e.g., government shutdowns, regulatory risk, macro uncertainty, tariff fears), reduce the score by 1 compared to what a purely bullish reading would suggest.
+- When an article presents a primarily bearish outlook but includes some mitigating bullish scenarios or recovery possibilities, increase the score by 1 compared to what a purely bearish reading would suggest.
+- Double-top patterns, head-and-shoulders patterns, and similar bearish technical chart patterns are moderately bearish signals, not strongly bearish.
+- Historical seasonal patterns (e.g., "Uptober," Q4 strength) count as forward-looking signals only if the article frames them as expectations for the future.
+- Stock-to-Flow model projections, RSI-based outlooks, and moving average targets count as forward-looking bullish signals.
+- Price targets in the $100K–$140K range for Bitcoin within a cycle are moderately bullish (score ~13–14), not strongly bullish (15), unless the article is unambiguously euphoric with no caveats.
+- Price targets above $140K with strong institutional backing, multiple analyst consensus, and minimal caveats may warrant a score of 14–15.
+- Dying NFT demand, declining altcoin metrics, and bearish alt signals contribute modestly to a bearish Bitcoin sentiment score only if they reflect broader crypto market weakness.
+- Weak or hedged language ("could," "may," "might," "is likely to") significantly reduces the strength of any bullish or bearish signal. Articles using heavily hedged language should not score above 12 even if the direction is bullish.
+- Articles that focus primarily on uncertainty, macro risks (Fed decisions, geopolitical events, unemployment data), or mixed technical signals (some buy, some sell indicators) should score in the neutral-to-bearish range (4–8), not the bullish range.
+- When technical indicators are mixed (e.g., some EMAs say "Buy" but Hull MA and VWAP say "Sell"), treat the net signal as neutral or weakly directional.
+- Articles predicting near-term continued downtrends before any potential recovery should be scored bearish (1–5), not neutral or bullish, even if a recovery is mentioned later.
+- Consolidation phases with "big move either way" framing (could go up OR down) are neutral-to-mildly bullish depending on the balance of supporting evidence. If institutional accumulation and bullish price targets are emphasized alongside the uncertainty, lean bullish (12–13).
+- If an article's forward-looking content is sparse, vague, or mostly framed around caution and uncertainty, score conservatively in the bearish-to-neutral range (3–7).
+- Calibrate carefully: avoid overweighting either bullish or bearish signals. Aim for the most precise integer on the scale.
+
+Domain-specific calibration notes:
+- "Market sentiment veering towards greed" combined with macro uncertainty (Fed decisions, geopolitical risks like Evergrande fallout) and mixed technicals is a net bearish signal — score 2–4.
+- Seasonal analysis predicting a near-term drop in September before a possible October recovery is net bearish for the immediate forward period — score 2–3.
+- Multiple analysts citing price targets of $140K with institutional accumulation, ETF inflows, and regulatory clarity as tailwinds, even with some macro risks, is strongly bullish — score 13–14.
+
+Respond with only: {"score": <integer 1-15>}
