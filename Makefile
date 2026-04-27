@@ -1,7 +1,7 @@
 UV ?= uv
 RUN_DIR ?= outputs/gepa_runs/bitcoin_sentiment/run_gptoss120b_b150
 
-.PHONY: bootstrap sync test lint convert gepa gepa-dry gepa-rate-limited report docker
+.PHONY: bootstrap sync test lint convert gepa gepa-dry gepa-rate-limited report docker test-eval test-eval-dry
 
 bootstrap:
 	$(UV) run python scripts/setup/bootstrap.py
@@ -32,3 +32,9 @@ report:
 
 docker:
 	docker compose run --rm research
+
+test-eval:
+	$(UV) run python scripts/run_test_eval.py
+
+test-eval-dry:
+	$(UV) run python scripts/run_test_eval.py --dry-run --expected-n 0
