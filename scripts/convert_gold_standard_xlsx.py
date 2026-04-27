@@ -10,6 +10,7 @@ from src.data.schemas import ArticleRecord
 
 DEFAULT_INPUT = Path("data/train/BTC Project - Human Gold Standard Dataset (GEPA Input).xlsx")
 DEFAULT_OUTPUT = Path("data/train/articles.jsonl")
+DEFAULT_ARTICLE_ID_PREFIX = "btc-gepa-train"
 
 SPREADSHEET_NS = {"xlsx": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
@@ -79,13 +80,17 @@ def read_first_sheet_rows(path: Path) -> list[list[str]]:
     return rows
 
 
-def row_to_article(record: dict[str, str], index: int) -> ArticleRecord:
+def row_to_article(
+    record: dict[str, str],
+    index: int,
+    article_id_prefix: str = DEFAULT_ARTICLE_ID_PREFIX,
+) -> ArticleRecord:
     title = record["title"].strip()
     gold_score = integrated_gold_score(record["direction"], record["confidence"])
     month = excel_serial_date_to_month(record["month"].strip())
 
     return ArticleRecord(
-        article_id=f"btc-gepa-train-{index:03d}",
+        article_id=f"{article_id_prefix}-{index:03d}",
         text=record["text"].strip(),
         title=title,
         url=record["url"].strip(),
@@ -96,7 +101,11 @@ def row_to_article(record: dict[str, str], index: int) -> ArticleRecord:
     )
 
 
-def convert_xlsx_to_jsonl(input_path: Path, output_path: Path) -> int:
+def convert_xlsx_to_jsonl(
+    input_path: Path,
+    output_path: Path,
+    article_id_prefix: str = DEFAULT_ARTICLE_ID_PREFIX,
+) -> int:
     rows = read_first_sheet_rows(input_path)
     if not rows:
         raise ValueError(f"No rows found in {input_path}")
@@ -122,7 +131,7 @@ def convert_xlsx_to_jsonl(input_path: Path, output_path: Path) -> int:
         record = dict(zip(headers, padded_row, strict=False))
         if not any(value.strip() for value in record.values()):
             continue
-        articles.append(row_to_article(record, len(articles) + 1))
+        articles.append(row_to_article(record, len(articles) + 1, article_id_prefix))
 
     write_jsonl(output_path, [article.model_dump(mode="json") for article in articles])
     return len(articles)
@@ -134,12 +143,17 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--article-id-prefix",
+        default=DEFAULT_ARTICLE_ID_PREFIX,
+        help="Prefix for generated article IDs before the numeric suffix.",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    count = convert_xlsx_to_jsonl(args.input, args.output)
+    count = convert_xlsx_to_jsonl(args.input, args.output, args.article_id_prefix)
     print(f"Wrote {count} records to {args.output}")
 
 

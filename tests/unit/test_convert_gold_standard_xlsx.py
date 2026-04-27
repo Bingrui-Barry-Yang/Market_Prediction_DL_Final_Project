@@ -50,6 +50,45 @@ def test_convert_xlsx_to_jsonl_includes_text(monkeypatch, tmp_path) -> None:
     assert records[0]["gold_score"] == 15
 
 
+def test_convert_xlsx_to_jsonl_accepts_article_id_prefix(monkeypatch, tmp_path) -> None:
+    monkeypatch.setattr(
+        "scripts.convert_gold_standard_xlsx.read_first_sheet_rows",
+        lambda path: [
+            [
+                "month",
+                "source",
+                "title",
+                "url",
+                "direction",
+                "confidence",
+                "notes",
+                "text",
+            ],
+            [
+                "45352.0",
+                "Example News",
+                "Bitcoin could move higher",
+                "https://example.com/article",
+                "1.0",
+                "5.0",
+                "The article is strongly bullish.",
+                "Full worksheet article text.",
+            ],
+        ],
+    )
+
+    output_path = tmp_path / "articles_test.jsonl"
+    count = convert_xlsx_to_jsonl(
+        tmp_path / "input.xlsx",
+        output_path,
+        article_id_prefix="btc-gepa-test",
+    )
+    records = read_jsonl(output_path)
+
+    assert count == 1
+    assert records[0]["article_id"] == "btc-gepa-test-001"
+
+
 def test_convert_xlsx_to_jsonl_requires_text_header(monkeypatch, tmp_path) -> None:
     monkeypatch.setattr(
         "scripts.convert_gold_standard_xlsx.read_first_sheet_rows",
