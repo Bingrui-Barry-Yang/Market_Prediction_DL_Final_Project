@@ -24,89 +24,51 @@ The current GEPA runner uses Gemini through LiteLLM. The default task and reflec
 
 - `gemini/gemini-2.5-flash-lite`
 
-The broader project can still compare other models later, such as Qwen, Kimi, and GPT-OSS 120B, through provider-specific adapters or GEPA model arguments.
+The broader project can still compare other models later through GEPA model arguments and saved run artifacts.
 
 ## Pipeline
 
-### Stage 1: GEPA Training
+### GEPA Training
 
 Use the 30 curated training articles to optimize prompts for structured information extraction.
 
-Expected inputs:
+Inputs:
 
 - `data/train/articles.jsonl`
-- prompt templates under `src/prompts/` or future prompt asset files
 
-Expected outputs:
+Outputs:
 
 - prompt candidates
 - prompt run metadata
 - per-generation metrics
-- selected best prompt per model, and optionally one overall best prompt
+- selected best prompt per model
 
 Output location:
 
 - `outputs/gepa_runs/`
 
-### Stage 2: Test Evaluation
+### Report Generation
 
-Apply the best prompt from Stage 1 to the unseen test dataset of 35-40 articles.
+Generate analysis figures and PDF/TeX summaries from completed GEPA run directories.
 
-Expected inputs:
+Inputs:
 
-- `data/test/articles.jsonl`
-- best prompt artifacts from `outputs/gepa_runs/`
+- completed run directories under `outputs/gepa_runs/bitcoin_sentiment/`
 
-Expected outputs:
+Outputs:
 
-- model predictions
-- parse status
-- direction accuracy
-- macro F1
-- confidence agreement or correlation
-- parse failure rate
-- model comparison tables
+- PDF reports
+- figure PDFs
+- LaTeX source
+- summary metric JSON
 
 Output location:
 
-- `outputs/evaluations/`
-
-### Stage 3: Optional Real-World Validation
-
-Select articles from specific news sources across different time periods, extract predicted viewpoints with the best prompt, and compare those predictions with actual Bitcoin price movements.
-
-This stage is optional because the core project question is prompt extraction quality, not production price prediction.
-
-Expected outputs:
-
-- extracted source-level predictions
-- realized BTC movement labels
-- optional confidence-weighted accuracy scores
-- source comparison summaries
-
-Output location:
-
-- `outputs/validation/`
-
-### Stage 4: Final Analysis
-
-Summarize whether optimized prompts improved extraction performance and compare model behavior across Qwen, Kimi, and GPT-OSS 120B.
-
-Expected outputs:
-
-- final metric tables
-- prompt comparison summaries
-- model comparison summaries
-- discussion of failure modes
-- reproducible report artifacts
-
-Output location:
-
-- `outputs/reports/`
+- `reports/`
 
 ## Data Format
 
-JSONL is the canonical dataset format. Each line in `data/train/articles.jsonl` and `data/test/articles.jsonl` should follow this schema:
+JSONL is the canonical dataset format. Each line in `data/train/articles.jsonl` follows this schema:
 
 ```json
 {
@@ -134,21 +96,12 @@ Human annotations include both direction and confidence. The JSONL stores these 
 ```text
 Market_Prediction_DL_Final_Project/
 ├── src/
-│   ├── common/          # Logging, JSONL helpers, shared utility code
-│   ├── config/          # Settings and environment parsing
-│   ├── data/            # Dataset schemas, validation, loading
-│   ├── prompts/         # Prompt templates and rendering helpers
-│   ├── models/          # Provider-agnostic LLM adapter interfaces
-│   ├── gepa/            # Prompt optimization loop skeleton
-│   ├── extraction/      # Structured response parsing and normalization
-│   ├── evaluation/      # Metrics and comparison logic
-│   ├── validation/      # Optional real-world BTC movement validation
-│   └── analysis/        # Final report generation helpers
+│   ├── common/          # JSONL helpers and shared utilities
+│   └── data/            # Canonical dataset schemas
 ├── scripts/
+│   ├── convert_gold_standard_xlsx.py
 │   ├── run_gepa.py
-│   ├── run_test_evaluation.py
-│   ├── run_real_world_validation.py
-│   ├── run_final_analysis.py
+│   ├── run_gepa_rate_limited.py
 │   └── setup/bootstrap.py
 ├── data/
 │   ├── train/
@@ -160,6 +113,9 @@ Market_Prediction_DL_Final_Project/
 │   ├── evaluations/
 │   ├── validation/
 │   └── reports/
+├── reports/
+│   ├── generate_report.py
+│   └── run_*/
 ├── docker/research/Dockerfile
 ├── docker-compose.yml
 ├── pyproject.toml
@@ -250,27 +206,22 @@ docker compose run --rm research uv run python scripts/run_gepa.py \
   data/train/articles.jsonl
 ```
 
-Run test evaluation:
+Run the rate-limit-resilient GEPA variant:
 
 ```bash
-uv run python scripts/run_test_evaluation.py
+uv run python scripts/run_gepa_rate_limited.py data/train/articles.jsonl
 ```
 
-Run optional real-world validation:
+Generate a report from a completed GEPA run:
 
 ```bash
-uv run python scripts/run_real_world_validation.py
-```
-
-Build final analysis artifacts:
-
-```bash
-uv run python scripts/run_final_analysis.py
+uv run python reports/generate_report.py \
+  --run-dir outputs/gepa_runs/bitcoin_sentiment/run_gptoss120b_b150
 ```
 
 ## Notes
 
 - This repository no longer follows the old trust-weighted trading pipeline.
 - The project does not require FastAPI, Streamlit, TFT modeling, or author trust modeling.
-- The first implementation target is a reproducible research workflow with clean schemas, prompt versioning, model adapters, and metrics.
+- The current implementation target is a reproducible GEPA research workflow with a compact dataset converter, training runners, and run reports.
 - Keep `.env` private. Commit `.env.example`, not `.env`.

@@ -22,4 +22,4 @@ RUN uv sync --frozen --no-dev
 
 COPY . /app
 
-CMD ["uv", "run", "python", "scripts/run_final_analysis.py"]
+CMD ["uv", "run", "python", "scripts/run_gepa.py", "--dry-run", "data/train/articles.jsonl"]

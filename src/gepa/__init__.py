@@ -1,1 +1,0 @@
-"""GEPA prompt optimization skeleton."""

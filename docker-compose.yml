@@ -9,4 +9,4 @@ services:
     volumes:
       - .:/app
     working_dir: /app
-    command: ["uv", "run", "python", "scripts/run_final_analysis.py"]
+    command: ["uv", "run", "python", "scripts/run_gepa.py", "--dry-run", "data/train/articles.jsonl"]

@@ -31,12 +31,11 @@ import time
 from pathlib import Path
 from threading import Lock
 
+import gepa
 from gepa.adapters.default_adapter.default_adapter import (
     DefaultDataInst,
     EvaluationResult,
 )
-
-import gepa
 
 # --- Configuration ---
 GEPA_RESULT_PATH = "outputs/gepa_runs/gepa_result.json"

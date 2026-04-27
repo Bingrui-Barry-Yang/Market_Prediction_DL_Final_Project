@@ -1,1 +1,0 @@
-"""Structured model-response parsing."""
