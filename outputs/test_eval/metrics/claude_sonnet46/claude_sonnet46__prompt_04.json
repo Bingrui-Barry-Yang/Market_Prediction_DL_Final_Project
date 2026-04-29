@@ -1,0 +1,54 @@
+{
+  "task_model_slug": "claude_sonnet46",
+  "source_model_slug": "claude_sonnet46",
+  "prompt_idx": 4,
+  "n_articles": 35,
+  "n_parsed": 34,
+  "parse_rate": 0.9714285714285714,
+  "mean_gepa_score": 0.5428571428571428,
+  "exact_match_accuracy": 0.14285714285714285,
+  "direction_accuracy": 0.7714285714285715,
+  "direction_macro_f1": 0.7397047397047397,
+  "mean_absolute_error": 1.8235294117647058,
+  "root_mean_squared_error": 2.3136424046231925,
+  "mean_signed_error": -0.7058823529411765,
+  "score_distribution": {
+    "3": 4,
+    "4": 4,
+    "5": 2,
+    "6": 1,
+    "7": 3,
+    "8": 2,
+    "9": 3,
+    "11": 4,
+    "12": 4,
+    "13": 7
+  },
+  "abs_error_distribution": {
+    "0": 5,
+    "1": 12,
+    "2": 10,
+    "4": 5,
+    "5": 2
+  },
+  "band_confusion": {
+    "bearish": {
+      "bearish": 10,
+      "neutral": 2,
+      "bullish": 0
+    },
+    "neutral": {
+      "bearish": 0,
+      "neutral": 3,
+      "bullish": 1
+    },
+    "bullish": {
+      "bearish": 0,
+      "neutral": 4,
+      "bullish": 14
+    }
+  },
+  "median_latency_ms": 1213.238234166056,
+  "p95_latency_ms": 10104.357334133232,
+  "total_retries": 16
+}

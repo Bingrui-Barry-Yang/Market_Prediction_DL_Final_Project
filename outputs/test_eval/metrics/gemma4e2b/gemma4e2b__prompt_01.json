@@ -1,0 +1,53 @@
+{
+  "task_model_slug": "gemma4e2b",
+  "source_model_slug": "gemma4e2b",
+  "prompt_idx": 1,
+  "n_articles": 35,
+  "n_parsed": 35,
+  "parse_rate": 1.0,
+  "mean_gepa_score": 0.6285714285714286,
+  "exact_match_accuracy": 0.34285714285714286,
+  "direction_accuracy": 0.7142857142857143,
+  "direction_macro_f1": 0.6523809523809524,
+  "mean_absolute_error": 1.7714285714285714,
+  "root_mean_squared_error": 2.7774602993176543,
+  "mean_signed_error": -0.4,
+  "score_distribution": {
+    "3": 5,
+    "4": 3,
+    "7": 9,
+    "8": 2,
+    "12": 5,
+    "13": 7,
+    "14": 4
+  },
+  "abs_error_distribution": {
+    "0": 12,
+    "1": 12,
+    "2": 2,
+    "4": 4,
+    "5": 2,
+    "6": 2,
+    "8": 1
+  },
+  "band_confusion": {
+    "bearish": {
+      "bearish": 7,
+      "neutral": 4,
+      "bullish": 1
+    },
+    "neutral": {
+      "bearish": 1,
+      "neutral": 3,
+      "bullish": 0
+    },
+    "bullish": {
+      "bearish": 0,
+      "neutral": 4,
+      "bullish": 15
+    }
+  },
+  "median_latency_ms": 8924.165153875947,
+  "p95_latency_ms": 10763.16379616037,
+  "total_retries": 0
+}

@@ -1,0 +1,54 @@
+{
+  "task_model_slug": "gptoss120b",
+  "source_model_slug": "claude_sonnet46",
+  "prompt_idx": 7,
+  "n_articles": 35,
+  "n_parsed": 35,
+  "parse_rate": 1.0,
+  "mean_gepa_score": 0.75,
+  "exact_match_accuracy": 0.3142857142857143,
+  "direction_accuracy": 0.9142857142857143,
+  "direction_macro_f1": 0.8208180708180709,
+  "mean_absolute_error": 1.0571428571428572,
+  "root_mean_squared_error": 1.647508942095828,
+  "mean_signed_error": 0.14285714285714285,
+  "score_distribution": {
+    "3": 3,
+    "4": 6,
+    "5": 3,
+    "7": 2,
+    "8": 1,
+    "11": 3,
+    "12": 2,
+    "13": 6,
+    "14": 8,
+    "15": 1
+  },
+  "abs_error_distribution": {
+    "0": 11,
+    "1": 19,
+    "2": 2,
+    "4": 2,
+    "6": 1
+  },
+  "band_confusion": {
+    "bearish": {
+      "bearish": 11,
+      "neutral": 1,
+      "bullish": 0
+    },
+    "neutral": {
+      "bearish": 1,
+      "neutral": 2,
+      "bullish": 1
+    },
+    "bullish": {
+      "bearish": 0,
+      "neutral": 0,
+      "bullish": 19
+    }
+  },
+  "median_latency_ms": 10718.882974702865,
+  "p95_latency_ms": 22383.227904653162,
+  "total_retries": 0
+}

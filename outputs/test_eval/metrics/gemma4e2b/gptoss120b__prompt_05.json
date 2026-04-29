@@ -1,0 +1,58 @@
+{
+  "task_model_slug": "gemma4e2b",
+  "source_model_slug": "gptoss120b",
+  "prompt_idx": 5,
+  "n_articles": 35,
+  "n_parsed": 35,
+  "parse_rate": 1.0,
+  "mean_gepa_score": 0.39285714285714285,
+  "exact_match_accuracy": 0.14285714285714285,
+  "direction_accuracy": 0.6,
+  "direction_macro_f1": 0.4804232804232804,
+  "mean_absolute_error": 4.2,
+  "root_mean_squared_error": 5.669467095138408,
+  "mean_signed_error": 2.6,
+  "score_distribution": {
+    "2": 1,
+    "3": 1,
+    "5": 4,
+    "8": 3,
+    "11": 2,
+    "12": 1,
+    "13": 2,
+    "14": 6,
+    "15": 15
+  },
+  "abs_error_distribution": {
+    "0": 5,
+    "1": 6,
+    "2": 7,
+    "3": 3,
+    "5": 3,
+    "7": 1,
+    "8": 2,
+    "9": 4,
+    "10": 2,
+    "12": 2
+  },
+  "band_confusion": {
+    "bearish": {
+      "bearish": 4,
+      "neutral": 1,
+      "bullish": 7
+    },
+    "neutral": {
+      "bearish": 0,
+      "neutral": 1,
+      "bullish": 3
+    },
+    "bullish": {
+      "bearish": 2,
+      "neutral": 1,
+      "bullish": 16
+    }
+  },
+  "median_latency_ms": 14326.329804956913,
+  "p95_latency_ms": 19504.839146835726,
+  "total_retries": 0
+}
