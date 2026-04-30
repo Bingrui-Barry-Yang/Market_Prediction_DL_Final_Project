@@ -24,6 +24,7 @@ No API key required -- Binance public endpoint.
 """
 
 import argparse
+import csv
 import json
 import time
 from datetime import datetime, timezone
@@ -243,13 +244,15 @@ def evaluate_article(article: dict) -> dict:
         "green_area": round(green, 2),
         "red_area":   round(red, 2),
         "ratio":      round(ratio, 4),
+        "prices":     prices,
+        "timestamps": [ts for ts, _ in price_data],
     }
 
 
 def main():
     parser = argparse.ArgumentParser(description="Evaluate Bitcoin author trustworthiness.")
     parser.add_argument("--articles", required=True, help="Path to articles JSONL file")
-    parser.add_argument("--output",   default="outputs/author_evaluation.json")
+    parser.add_argument("--output",   default="outputs/author_evaluation.csv")
     args = parser.parse_args()
 
     articles = []
@@ -280,20 +283,72 @@ def main():
     simple   = trust_simple(ratios)
     weighted = trust_weighted(ratios, confidences)
 
-    output = {
-        "articles_evaluated": len(results),
-        "trust_simple":       round(simple, 4),
-        "trust_weighted":     round(weighted, 4),
-        "interpretation": {
-            "simple":   interpret(simple),
-            "weighted": interpret(weighted),
-        },
-        "articles": results,
-    }
-
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
-    with open(args.output, "w") as f:
-        json.dump(output, f, indent=2)
+
+    # One row per article per hour -- running cumulative ratio
+    fieldnames = [
+        "article_id", "date", "score", "direction", "confidence",
+        "hour", "timestamp", "price", "baseline",
+        "cumulative_green", "cumulative_red", "running_ratio",
+    ]
+
+    with open(args.output, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for r in results:
+            article_date = next((a["date"] for a in articles if a.get("article_id") == r["article_id"]), "")
+            prices_list  = r["prices"]
+            timestamps   = r["timestamps"]
+            baseline     = r["baseline"]
+            direction    = r["direction"]
+            p_up         = baseline * (1 + NEUTRAL_BAND)
+            p_lo         = baseline * (1 - NEUTRAL_BAND)
+
+            cum_green = 0.0
+            cum_red   = 0.0
+
+            for h in range(len(prices_list) - 1):
+                p0  = prices_list[h]
+                p1  = prices_list[h + 1]
+                avg = (p0 + p1) / 2
+
+                if direction == "bullish":
+                    area = trapezoidal_segment(p0, p1, baseline)
+                    if avg > baseline:
+                        cum_green += area
+                    elif avg < baseline:
+                        cum_red += area
+                elif direction == "bearish":
+                    area = trapezoidal_segment(p0, p1, baseline)
+                    if avg < baseline:
+                        cum_green += area
+                    elif avg > baseline:
+                        cum_red += area
+                elif direction == "neutral":
+                    if p_lo <= avg <= p_up:
+                        ref = p_up if avg >= baseline else p_lo
+                        cum_green += trapezoidal_segment(p0, p1, ref)
+                    else:
+                        ref = p_up if avg > p_up else p_lo
+                        cum_red += trapezoidal_segment(p0, p1, ref)
+
+                running_ratio = calculate_ratio(cum_green, cum_red)
+                ts = datetime.fromtimestamp(timestamps[h] / 1000, tz=timezone.utc).strftime("%Y-%m-%d %H:%M")
+
+                writer.writerow({
+                    "article_id":      r["article_id"],
+                    "date":            article_date,
+                    "score":           r["score"],
+                    "direction":       direction,
+                    "confidence":      r["confidence"],
+                    "hour":            h + 1,
+                    "timestamp":       ts,
+                    "price":           round(p1, 2),
+                    "baseline":        round(baseline, 2),
+                    "cumulative_green": round(cum_green, 2),
+                    "cumulative_red":   round(cum_red, 2),
+                    "running_ratio":   round(running_ratio, 4),
+                })
 
     print(f"\n=== Author Trustworthiness ===")
     print(f"Articles evaluated: {len(results)}")
