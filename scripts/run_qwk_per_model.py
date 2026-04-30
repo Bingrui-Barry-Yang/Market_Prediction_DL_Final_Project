@@ -1,0 +1,228 @@
+"""Compute Quadratic Weighted Kappa per task model (overall score).
+
+For each task model, aggregate ALL parsed predictions across every source
+model's prompts and every test article, then compute QWK on direction
+(3-class) and confidence (5-class). Produces 4 numbers (one per task model)
+that answer "which model is best at this rating job?".
+
+Inputs:  data/qwk/<task_model_slug>/<task_model_slug>.csv
+Outputs: outputs/qwk/per_model/{summary.json, summary.csv, README.md}
+
+Usage:
+    python scripts/run_qwk_per_model.py
+    python scripts/run_qwk_per_model.py --input data/qwk \\
+                                        --output-dir outputs/qwk/per_model
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import sys
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+from sklearn.metrics import cohen_kappa_score
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_INPUT = REPO_ROOT / "data" / "qwk"
+DEFAULT_OUTPUT = REPO_ROOT / "outputs" / "qwk" / "per_model"
+
+CSV_COLUMNS = [
+    "task_model_slug",
+    "n_rows_total", "n_rows_ok", "parse_rate",
+    "n_articles", "n_prompts_evaluated",
+    "qwk_direction", "qwk_confidence",
+    "mae", "exact_match_rate",
+    "warning",
+]
+
+
+def _to_int(s: str) -> int | None:
+    return int(s) if s != "" else None
+
+
+def _to_bool(s: str) -> bool:
+    return s.strip().lower() == "true"
+
+
+def load_all_qwk_inputs(input_dir: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for task_dir in sorted(input_dir.iterdir()):
+        if not task_dir.is_dir():
+            continue
+        csv_path = task_dir / f"{task_dir.name}.csv"
+        if not csv_path.exists():
+            continue
+        with csv_path.open("r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for r in reader:
+                rows.append({
+                    "article_id":        r["article_id"],
+                    "task_model_slug":   r["task_model_slug"],
+                    "source_model_slug": r["source_model_slug"],
+                    "prompt_idx":        int(r["prompt_idx"]),
+                    "is_seed":           _to_bool(r["is_seed"]),
+                    "is_best":           _to_bool(r["is_best"]),
+                    "parse_status":      r["parse_status"],
+                    "gold_score":        _to_int(r["gold_score"]),
+                    "pred_score":        _to_int(r["pred_score"]),
+                    "gold_direction":    _to_int(r["gold_direction"]),
+                    "gold_confidence":   _to_int(r["gold_confidence"]),
+                    "pred_direction":    _to_int(r["pred_direction"]),
+                    "pred_confidence":   _to_int(r["pred_confidence"]),
+                })
+    if not rows:
+        sys.exit(f"[ERROR] no per-task CSVs found in {input_dir}")
+    return rows
+
+
+def safe_qwk(gold: list[int], pred: list[int]) -> tuple[float | None, str | None]:
+    if len(gold) == 0:
+        return None, "empty sample"
+    g = np.asarray(gold)
+    p = np.asarray(pred)
+    if len(np.unique(g)) < 2 and len(np.unique(p)) < 2:
+        return None, "single-class gold and pred (kappa undefined)"
+    try:
+        k = cohen_kappa_score(g, p, weights="quadratic")
+    except Exception as e:
+        return None, f"sklearn error: {e}"
+    if k is None or (isinstance(k, float) and np.isnan(k)):
+        return None, "kappa is NaN"
+    return float(k), None
+
+
+def compute_model(rows: list[dict[str, Any]], task: str) -> dict[str, Any]:
+    task_rows = [r for r in rows if r["task_model_slug"] == task]
+    n_total = len(task_rows)
+    ok = [r for r in task_rows if r["parse_status"] == "ok"]
+    n_ok = len(ok)
+    parse_rate = round(n_ok / n_total, 4) if n_total else 0.0
+
+    n_articles = len({r["article_id"] for r in task_rows})
+    n_prompts = len({(r["source_model_slug"], r["prompt_idx"]) for r in task_rows})
+
+    qwk_dir, w_dir = safe_qwk(
+        [r["gold_direction"] for r in ok],
+        [r["pred_direction"] for r in ok],
+    )
+    qwk_conf, w_conf = safe_qwk(
+        [r["gold_confidence"] for r in ok],
+        [r["pred_confidence"] for r in ok],
+    )
+    warnings = [w for w in (w_dir, w_conf) if w]
+
+    if n_ok > 0:
+        gold_score = np.asarray([r["gold_score"] for r in ok])
+        pred_score = np.asarray([r["pred_score"] for r in ok])
+        mae = float(np.abs(gold_score - pred_score).mean())
+        em = float((gold_score == pred_score).mean())
+    else:
+        mae = None
+        em = None
+
+    return {
+        "task_model_slug": task,
+        "n_rows_total": n_total,
+        "n_rows_ok": n_ok,
+        "parse_rate": parse_rate,
+        "n_articles": n_articles,
+        "n_prompts_evaluated": n_prompts,
+        "qwk_direction": qwk_dir,
+        "qwk_confidence": qwk_conf,
+        "mae": mae,
+        "exact_match_rate": em,
+        "warning": "; ".join(warnings) if warnings else None,
+    }
+
+
+def write_readme(out_dir: Path, n_models: int) -> None:
+    body = f"""# QWK per-model overall score
+
+Generated by `scripts/run_qwk_per_model.py`.
+
+One aggregate Quadratic Weighted Kappa per task model, computed over every
+parsed prediction across all source-model prompts and all test articles.
+Total: {n_models} task models.
+
+## Files
+
+- `summary.json` — full structured results, one entry per task model.
+- `summary.csv`  — flat one-row-per-model table for plotting / analysis.
+
+## Metrics
+
+- `qwk_direction` — Cohen's kappa (quadratic weights) on 3-class direction
+  (`-1` / `0` / `+1`). Higher = better agreement with gold.
+- `qwk_confidence` — Cohen's kappa (quadratic weights) on 5-class confidence
+  (1-5 within the predicted band).
+- `mae` — mean absolute error of the full 1-15 score (lower = better).
+- `exact_match_rate` — fraction of `(article, prompt)` rows where
+  `pred_score == gold_score`.
+
+## Sample-size context (recorded for plotting)
+
+- `n_rows_total` — total `(article, prompt)` predictions for the model
+  (parsed + failed).
+- `n_rows_ok` — predictions used for kappa (`parse_status == "ok"`).
+- `parse_rate` — `n_rows_ok / n_rows_total`.
+- `n_articles` — distinct articles evaluated.
+- `n_prompts_evaluated` — distinct `(source_model, prompt_idx)` combinations.
+
+`warning` is non-null when kappa is undefined.
+"""
+    (out_dir / "README.md").write_text(body, encoding="utf-8")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--input", default=str(DEFAULT_INPUT),
+                        help="root containing <slug>/<slug>.csv files")
+    parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT),
+                        help="where to write summary.json + summary.csv")
+    args = parser.parse_args()
+
+    src = Path(args.input)
+    out = Path(args.output_dir)
+    if not src.exists():
+        sys.exit(f"[ERROR] input dir not found: {src}")
+    out.mkdir(parents=True, exist_ok=True)
+
+    rows = load_all_qwk_inputs(src)
+    print(f"[INFO] loaded {len(rows)} rows from {src}")
+
+    task_models = sorted({r["task_model_slug"] for r in rows})
+    print(f"[INFO] computing per-model QWK for {len(task_models)} models")
+
+    records: list[dict[str, Any]] = []
+    for task in task_models:
+        rec = compute_model(rows, task)
+        records.append(rec)
+        qd = rec["qwk_direction"]
+        qc = rec["qwk_confidence"]
+        qd_str = f"{qd:.3f}" if qd is not None else " n/a "
+        qc_str = f"{qc:.3f}" if qc is not None else " n/a "
+        print(f"[INFO] {task:<16}  qwk_direction={qd_str}  qwk_confidence={qc_str}  "
+              f"(n_ok={rec['n_rows_ok']:>4}/{rec['n_rows_total']:>4}, "
+              f"parse_rate={rec['parse_rate']:.2%})")
+
+    json_path = out / "summary.json"
+    json_path.write_text(json.dumps(records, indent=2), encoding="utf-8")
+    print(f"[INFO] wrote {json_path}")
+
+    csv_path = out / "summary.csv"
+    with csv_path.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=CSV_COLUMNS)
+        w.writeheader()
+        for r in records:
+            w.writerow(r)
+    print(f"[INFO] wrote {csv_path}")
+
+    write_readme(out, len(records))
+    print(f"[INFO] wrote {out / 'README.md'}")
+
+
+if __name__ == "__main__":
+    main()
