@@ -47,6 +47,27 @@ Output location:
 
 - `outputs/gepa_runs/`
 
+### Test Evaluation
+
+Apply every candidate prompt from every completed GEPA run on every configured task model against the held-out test set.
+
+Inputs:
+
+- `data/test/articles_test.jsonl`
+- candidate prompts under `outputs/gepa_runs/bitcoin_sentiment/<source_run>/candidates.json`
+
+Outputs:
+
+- per-prediction JSONL rows under `predictions/<task_slug>/`
+- per-cell metrics under `metrics/<task_slug>/`
+- long-format `per_article_scores.jsonl`
+- wide `score_matrix.csv`, `error_matrix.csv`, `parse_matrix.csv`
+- `summary.json`, `prompts_index.json`, `run_log.jsonl`
+
+Output location:
+
+- `outputs/test_eval/`
+
 ### Report Generation
 
 Generate analysis figures and PDF/TeX summaries from completed GEPA run directories.
@@ -97,12 +118,16 @@ Human annotations include both direction and confidence. The JSONL stores these 
 Market_Prediction_DL_Final_Project/
 ├── src/
 │   ├── common/          # JSONL helpers and shared utilities
-│   └── data/            # Canonical dataset schemas
+│   ├── data/            # Canonical dataset schemas
+│   └── evaluation/      # Test-eval scoring, metrics, model/prompt registry
 ├── scripts/
 │   ├── convert_gold_standard_xlsx.py
 │   ├── run_gepa.py
 │   ├── run_gepa_rate_limited.py
+│   ├── run_test_eval.py
+│   ├── smoketest_claude_token_cost.py
 │   └── setup/bootstrap.py
+├── tests/
 ├── data/
 │   ├── train/
 │   ├── test/
@@ -110,6 +135,7 @@ Market_Prediction_DL_Final_Project/
 │   └── external/
 ├── outputs/
 │   ├── gepa_runs/
+│   ├── test_eval/
 │   ├── evaluations/
 │   ├── validation/
 │   └── reports/
@@ -137,7 +163,10 @@ Open `.env` and set:
 
 ```bash
 GEMINI_API_KEY=your_real_gemini_api_key_here
+ANTHROPIC_API_KEY=your_real_anthropic_api_key_here
 ```
+
+`GEMINI_API_KEY` is used by GEPA training when the task or reflection model is a Gemini variant. `ANTHROPIC_API_KEY` is required by test evaluation whenever a Claude task model is in the registry.
 
 Create or refresh the local scaffold:
 
@@ -210,6 +239,34 @@ Run the rate-limit-resilient GEPA variant:
 
 ```bash
 uv run python scripts/run_gepa_rate_limited.py data/train/articles.jsonl
+```
+
+Run a test-evaluation dry run (no LLM calls):
+
+```bash
+uv run python scripts/run_test_eval.py --dry-run --expected-n 0
+```
+
+Run the full test evaluation (every task model × every prompt × every test article):
+
+```bash
+docker run -d --name test_eval --network host \
+  --env-file .env \
+  -e OLLAMA_API_BASE=http://localhost:11434 \
+  -v "$(pwd)":/app -w /app \
+  market_prediction_dl_final_project-research:latest \
+  uv run python scripts/run_test_eval.py --resume
+```
+
+Run test evaluation on a single task model:
+
+```bash
+docker run --rm --network host \
+  --env-file .env \
+  -e OLLAMA_API_BASE=http://localhost:11434 \
+  -v "$(pwd)":/app -w /app \
+  market_prediction_dl_final_project-research:latest \
+  uv run python scripts/run_test_eval.py --task-model gemma4e2b --resume
 ```
 
 Generate a report from a completed GEPA run:

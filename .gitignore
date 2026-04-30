@@ -32,6 +32,18 @@ data/external/*
 !data/external/.gitkeep
 !data/external/*.jsonl
 !data/external/*.xlsx
+data/qwk/*
+!data/qwk/.gitkeep
+!data/qwk/*.jsonl
+!data/qwk/*.csv
+!data/qwk/*.json
+!data/qwk/*.md
+!data/qwk/*/
+data/qwk/*/*
+!data/qwk/*/*.jsonl
+!data/qwk/*/*.csv
+!data/qwk/*/*.json
+!data/qwk/*/*.md
 
 # Editors and OS
 .DS_Store

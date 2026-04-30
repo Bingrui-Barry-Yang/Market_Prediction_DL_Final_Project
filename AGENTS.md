@@ -43,22 +43,24 @@ Output:
 
 ### Stage 2: Test Evaluation
 
-Evaluate the best prompt on a separate unseen dataset of 35-40 articles.
+Run every prompt candidate from every completed GEPA source against every configured task model on the held-out test set. Implemented in `scripts/run_test_eval.py` with model and prompt registry in `src/evaluation/registry.py` and scoring helpers in `src/evaluation/scoring.py`.
 
 Input:
 
-- `data/test/articles.jsonl`
-- selected prompt artifacts from `outputs/gepa_runs/`
+- `data/test/articles_test.jsonl`
+- `candidates.json` and `result_*.json` files under `outputs/gepa_runs/bitcoin_sentiment/<source_run>/`
 
 Output:
 
-- model predictions
-- parse status
-- direction accuracy
-- macro F1
-- confidence agreement or correlation
-- parse failure rate
-- comparison tables under `outputs/evaluations/`
+- per-prediction JSONL rows (`predictions/<task_slug>/<source_slug>__prompt_NN.jsonl`)
+- per-cell aggregate metrics (`metrics/<task_slug>/<source_slug>__prompt_NN.json`)
+- long-format `per_article_scores.jsonl`
+- wide `score_matrix.csv`, `error_matrix.csv`, `parse_matrix.csv`
+- `summary.json`, `prompts_index.json`, `run_log.jsonl`
+
+Output location:
+
+- `outputs/test_eval/`
 
 ### Stage 3: Optional Real-World Validation
 
@@ -76,11 +78,18 @@ Output:
 
 ## Target Models
 
-The current GEPA runner uses Gemini through LiteLLM. The default task model and reflection model are both:
+The GEPA runner uses LiteLLM and accepts any LiteLLM-compatible model id via `--task-lm` / `--reflection-lm`. The script default is:
 
 - `gemini/gemini-2.5-flash-lite`
 
-Future model comparison can add Qwen, Kimi, and GPT-OSS 120B through provider-specific adapters or GEPA CLI model arguments. Do not require live model credentials for unit tests.
+Test evaluation iterates a fixed registry of task models (`src/evaluation/registry.py`):
+
+- `anthropic/claude-sonnet-4-6`
+- `ollama_chat/gpt-oss:120b`
+- `ollama_chat/qwen3.6:latest`
+- `ollama_chat/gemma4:e2b`
+
+Source models (those whose GEPA candidates are evaluated) are the same four. Do not require live model credentials for unit tests.
 
 ## Data Contracts
 
@@ -109,20 +118,37 @@ Human annotations include both direction and confidence, but the canonical JSONL
 
 Do not emit separate `gold_direction` or `gold_confidence` fields in the converted JSONL.
 
-For GEPA runs, use the canonical `data/train/articles.jsonl`.
+For GEPA runs, use the canonical `data/train/articles.jsonl`. For test evaluation, use `data/test/articles_test.jsonl`.
 
-Canonical extraction records should include:
+Canonical per-prediction records (one per (task_model, source_model, prompt_idx, article_id) cell, written by `scripts/run_test_eval.py`) include:
 
 ```json
 {
-  "article_id": "article-001",
-  "model_name": "qwen",
-  "prompt_version": "prompt-v001",
-  "pred_direction": "up",
-  "pred_confidence": "high",
-  "pred_reasoning": "The article expects stronger demand to increase BTC price.",
-  "raw_response": "{...}",
-  "parse_status": "ok"
+  "article_id": "btc-gepa-test-001",
+  "task_model": "anthropic/claude-sonnet-4-6",
+  "task_model_slug": "claude_sonnet46",
+  "source_model_slug": "gptoss120b",
+  "prompt_idx": 0,
+  "is_seed": true,
+  "is_best": false,
+  "prompt_sha256": "...",
+  "gold_score": 13,
+  "pred_score": 12,
+  "abs_error": 1,
+  "signed_error": -1,
+  "gepa_score": 0.75,
+  "exact_match": false,
+  "direction_correct": true,
+  "gold_band": "bullish",
+  "pred_band": "bullish",
+  "parse_status": "ok",
+  "parse_error": null,
+  "raw_response": "{\"score\": 12}",
+  "latency_ms": 3247,
+  "tokens_in": 2476,
+  "tokens_out": 6,
+  "n_retries": 0,
+  "timestamp": "2026-04-27T20:20:30Z"
 }
 ```
 
@@ -138,20 +164,16 @@ Canonical extraction records should include:
 - Keep prompt versions and run metadata reproducible.
 - Keep tests small and fast.
 
-## Recommended Module Responsibilities
+## Module Responsibilities
 
 ```text
-src/common/       logging, JSONL helpers, shared utilities
-src/config/       settings and environment parsing
-src/data/         article and extraction schemas, dataset loading
-src/prompts/      prompt templates and prompt rendering
-src/models/       LLM adapter protocols and provider implementations
-src/gepa/         prompt optimization loop and candidate selection
-src/extraction/   structured response parsing and normalization
-src/evaluation/   metrics and model comparison
-src/validation/   optional real-world BTC price movement validation
-src/analysis/      final report generation
+src/common/       JSONL helpers, logging, shared utilities
+src/data/         article schema (Pydantic ArticleRecord)
+src/evaluation/   test-eval scoring helpers, per-cell aggregate metrics,
+                  task/source model registry, prompt candidate loader
 ```
+
+Future modules may be added as new pipeline stages are introduced. Keep business logic in `src/`, executable runners in `scripts/`, source datasets in `data/`, generated artifacts in `outputs/`, and post-run analysis artifacts in `reports/`.
 
 ## Testing Expectations
 
@@ -174,7 +196,8 @@ Use:
 
 ```bash
 cp .env.example .env
-# edit .env and set GEMINI_API_KEY
+# edit .env and set GEMINI_API_KEY (for GEPA training with Gemini)
+# and ANTHROPIC_API_KEY (for test evaluation with Claude task models)
 uv sync
 uv run python -m pytest
 uv run python -m ruff check .

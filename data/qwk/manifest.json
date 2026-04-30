@@ -1,0 +1,34 @@
+[
+  {
+    "task_model_slug": "claude_sonnet46",
+    "n_rows": 1330,
+    "n_parsed": 1081,
+    "parse_rate": 0.8128,
+    "jsonl": "data/qwk/claude_sonnet46/claude_sonnet46.jsonl",
+    "csv": "data/qwk/claude_sonnet46/claude_sonnet46.csv"
+  },
+  {
+    "task_model_slug": "gemma4e2b",
+    "n_rows": 1330,
+    "n_parsed": 1330,
+    "parse_rate": 1.0,
+    "jsonl": "data/qwk/gemma4e2b/gemma4e2b.jsonl",
+    "csv": "data/qwk/gemma4e2b/gemma4e2b.csv"
+  },
+  {
+    "task_model_slug": "gptoss120b",
+    "n_rows": 1330,
+    "n_parsed": 1325,
+    "parse_rate": 0.9962,
+    "jsonl": "data/qwk/gptoss120b/gptoss120b.jsonl",
+    "csv": "data/qwk/gptoss120b/gptoss120b.csv"
+  },
+  {
+    "task_model_slug": "qwen36",
+    "n_rows": 805,
+    "n_parsed": 662,
+    "parse_rate": 0.8224,
+    "jsonl": "data/qwk/qwen36/qwen36.jsonl",
+    "csv": "data/qwk/qwen36/qwen36.csv"
+  }
+]
