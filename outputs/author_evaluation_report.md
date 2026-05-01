@@ -20,31 +20,29 @@ Both fall inside the `[−0.5, +0.5]` "noisy" band, and the simple/weighted gap 
 
 ## Per-article results
 
+Source: `outputs/author_evaluation_summary.csv`. Verdict bands: `>0.9` very correct · `0.5–0.9` correct · `−0.5 to 0.5` noisy · `−0.9 to −0.5` wrong · `<−0.9` very wrong.
+
 | ID | Date | Score | Direction | Conf. | Baseline ($) | Green | Red | Ratio | Verdict |
 |---|---|---:|---|---:|---:|---:|---:|---:|---|
-| 001 | 2024-10-24 |  7 | neutral | 2 |  67,359 |   546,308 | 6,641,477 | **−0.848** | wrong (price exceeded ±5% band) |
-| 002 | 2024-11-13 |  5 | bearish | 5 |  88,159 |    11,703 | 5,455,646 | **−0.996** | very wrong (rally to ~$100k) |
-| 003 | 2024-12-16 | 12 | bullish | 2 | 105,383 |    44,093 | 6,151,477 | **−0.986** | very wrong (post-ATH correction) |
-| 004 | 2025-02-05 |  3 | bearish | 3 |  98,318 | 3,451,757 |     8,646 | **+0.995** | very right |
-| 005 | 2025-04-24 |  9 | neutral | 4 |  93,418 | 1,006,919 | 2,511,923 | −0.428 | mid (drifted out of band) |
-| 006 | 2025-06-25 | 12 | bullish | 2 | 106,452 | 4,732,332 |     9,227 | **+0.996** | very right |
-| 007 | 2025-08-11 | 13 | bullish | 3 | 119,154 |   116,564 | 4,127,764 | **−0.945** | very wrong (top called at peak) |
-| 008 | 2025-09-09 | 12 | bullish | 2 | 111,652 | 3,235,401 |   169,817 | **+0.900** | right |
-| 009 | 2025-10-16 | 12 | bullish | 2 | 110,482 |   362,475 | 2,641,059 | **−0.759** | wrong |
-| 010 | 2025-11-12 |  8 | neutral | 3 | 102,832 |   187,597 | 4,846,503 | **−0.925** | wrong (broke band) |
-| 011 | 2025-12-10 |  8 | neutral | 3 |  92,138 | 1,103,354 |   103,303 | **+0.829** | right (range-bound) |
-| 012 | 2026-01-29 |  3 | bearish | 3 |  89,010 | 13,253,627 |        0 | **+1.000** | very right (drawdown to ~$70k) |
-| 013 | 2026-02-09 |  3 | bearish | 3 |  70,444 | 1,913,294 |    83,417 | **+0.916** | very right |
-| 014 | 2026-03-16 | 13 | bullish | 3 |  72,547 |   160,696 | 2,073,988 | **−0.856** | very wrong |
-| 015 | 2026-03-26 |  4 | bearish | 4 |  71,272 | 1,157,180 | 1,378,973 | −0.087 | mid |
+| 001 | 2024-10-24 |  7 | neutral | 2 |     67,359 |     546,308 |   6,641,477 | −0.8480 | wrong |
+| 002 | 2024-11-13 |  5 | bearish | 5 |     88,159 |      11,703 |   5,455,646 | −0.9957 | very wrong |
+| 003 | 2024-12-16 | 12 | bullish | 2 |    105,383 |      44,093 |   6,151,477 | −0.9858 | very wrong |
+| 004 | 2025-02-05 |  3 | bearish | 3 |     98,318 |   3,451,757 |       8,646 | +0.9950 | very correct |
+| 005 | 2025-04-24 |  9 | neutral | 4 |     93,418 |   1,006,919 |   2,511,923 | −0.4277 | noisy |
+| 006 | 2025-06-25 | 12 | bullish | 2 |    106,452 |   4,732,332 |       9,227 | +0.9961 | very correct |
+| 007 | 2025-08-11 | 13 | bullish | 3 |    119,154 |     116,564 |   4,127,764 | −0.9451 | very wrong |
+| 008 | 2025-09-09 | 12 | bullish | 2 |    111,652 |   3,235,401 |     169,817 | +0.9003 | very correct |
+| 009 | 2025-10-16 | 12 | bullish | 2 |    110,482 |     362,475 |   2,641,059 | −0.7586 | wrong |
+| 010 | 2025-11-12 |  8 | neutral | 3 |    102,832 |     187,597 |   4,846,503 | −0.9255 | very wrong |
+| 011 | 2025-12-10 |  8 | neutral | 3 |     92,138 |   1,103,354 |     103,303 | +0.8288 | correct |
+| 012 | 2026-01-29 |  3 | bearish | 3 |     89,010 |  13,253,627 |           0 | +1.0000 | very correct |
+| 013 | 2026-02-09 |  3 | bearish | 3 |     70,444 |   1,913,294 |      83,417 | +0.9164 | very correct |
+| 014 | 2026-03-16 | 13 | bullish | 3 |     72,547 |     160,696 |   2,073,988 | −0.8562 | wrong |
+| 015 | 2026-03-26 |  4 | bearish | 4 |     71,272 |   1,157,180 |   1,378,973 | −0.0875 | noisy |
 
-**Outcome split** (using `|ratio| > 0.5` as the decisive threshold):
+**Verdict counts**: 5 very correct · 1 correct · 2 noisy · 3 wrong · 4 very wrong.
 
-- Decisive correct: **6** (4, 6, 8, 11, 12, 13)
-- Decisive wrong:   **7** (1, 2, 3, 7, 9, 10, 14)
-- Inside ±0.5:      **2** (5, 15)
-
-When the model commits with high magnitude (`|ratio|`>0.9), it splits **5 right / 5 wrong** — the conviction is there, the directional accuracy isn't.
+Using `|ratio| > 0.5` as the decisive threshold: 6 decisive correct (4, 6, 8, 11, 12, 13), 7 decisive wrong (1, 2, 3, 7, 9, 10, 14), 2 inside ±0.5 (5, 15). When the model commits with `|ratio|>0.9` it splits 5 right / 4 wrong — the conviction is there, the directional accuracy isn't.
 
 ## By predicted direction
 
