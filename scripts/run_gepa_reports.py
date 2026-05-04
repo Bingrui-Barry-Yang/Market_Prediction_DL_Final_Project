@@ -18,7 +18,8 @@ The analyses are framed for prompt-optimization research:
   - Reflection-LM call dynamics: prompt/response length, cumulative chars
 
 Usage:
-  python reports/generate_report.py --run-dir outputs/gepa_runs/bitcoin_sentiment/run_gptoss120b_b150
+  python scripts/run_gepa_reports.py \
+    --run-dir outputs/gepa_runs/bitcoin_sentiment/run_gptoss120b_b150
 """
 
 from __future__ import annotations
@@ -145,7 +146,7 @@ def load_val_gold(data_path: Path) -> list[dict[str, Any]]:
                 rows.append(json.loads(line))
     val: list[dict[str, Any]] = []
     kept = 0
-    for i, row in enumerate(rows):
+    for row in rows:
         gs = row.get("gold_score")
         gr = str(row.get("gold_reasoning", "")).strip()
         if gs is None or not gr:
@@ -340,10 +341,16 @@ def plot_iteration_scores(trace: list[dict], out: Path) -> dict[str, list]:
     if not trace:
         return {}
     it = [e["i"] for e in trace]
-    old_mean = [np.mean(e.get("subsample_scores", [])) if e.get("subsample_scores") else np.nan
-                for e in trace]
-    new_mean = [np.mean(e.get("new_subsample_scores", [])) if e.get("new_subsample_scores") else np.nan
-                for e in trace]
+    old_mean = [
+        np.mean(e.get("subsample_scores", [])) if e.get("subsample_scores") else np.nan
+        for e in trace
+    ]
+    new_mean = [
+        np.mean(e.get("new_subsample_scores", []))
+        if e.get("new_subsample_scores")
+        else np.nan
+        for e in trace
+    ]
     accepted = [e.get("new_program_idx") is not None for e in trace]
 
     fig, ax = plt.subplots(figsize=(8, 4))
@@ -435,7 +442,7 @@ def plot_per_task_heatmap(
         if task_idx >= len(val_gold):
             continue
         gold = int(val_gold[task_idx]["gold_score"])
-        for (it, prog), payload in items:
+        for (_it, prog), payload in items:
             resp = payload.get("full_assistant_response", "")
             pred = parse_score_response(resp)
             s = score_against_gold(pred, gold)
@@ -484,7 +491,7 @@ TEX_TEMPLATE = r"""\documentclass[11pt]{article}
 \usepackage[T1]{fontenc}
 
 \title{GEPA Prompt Evolution Analysis\\\large Run: \texttt{REPLACE_RUN_NAME}}
-\author{Auto-generated from \texttt{reports/generate\_report.py}}
+\author{Auto-generated from \texttt{scripts/run\_gepa\_reports.py}}
 \date{REPLACE_DATE}
 
 \begin{document}
@@ -631,8 +638,14 @@ def main() -> None:
                         help="Path to a GEPA run_dir containing candidates.json etc.")
     parser.add_argument("--data", default="data/train/articles.jsonl",
                         help="Training JSONL used to reconstruct the valset for per-task scoring.")
-    parser.add_argument("--output-dir", default=None,
-                        help="Where to write figures and report. Defaults to reports/<run_name>.")
+    parser.add_argument(
+        "--output-dir",
+        default=None,
+        help=(
+            "Where to write figures and report. Defaults to "
+            "outputs/gepa_runs/reports/<run_name>."
+        ),
+    )
     parser.add_argument("--keywords", nargs="*", default=None,
                         help="Override the default keyword list.")
     args = parser.parse_args()
@@ -643,7 +656,11 @@ def main() -> None:
 
     keywords = args.keywords if args.keywords else DEFAULT_KEYWORDS
 
-    out_root = Path(args.output_dir) if args.output_dir else Path("reports") / run_dir.name
+    out_root = (
+        Path(args.output_dir)
+        if args.output_dir
+        else Path("outputs/gepa_runs/reports") / run_dir.name
+    )
     fig_dir = out_root / "figures"
     fig_dir.mkdir(parents=True, exist_ok=True)
 

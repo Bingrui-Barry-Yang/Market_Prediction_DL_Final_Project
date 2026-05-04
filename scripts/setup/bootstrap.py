@@ -1,21 +1,24 @@
 from pathlib import Path
 
 PROJECT_DIRS = [
+    "data/authordemo",
+    "data/qwk",
     "data/train",
     "data/test",
-    "data/validation",
-    "data/external",
-    "outputs/gepa_runs",
-    "outputs/evaluations",
-    "outputs/validation",
-    "outputs/reports",
+    "outputs/gepa_runs/bitcoin_sentiment",
+    "outputs/qwk/best_vs_seed",
+    "outputs/qwk/per_model",
+    "outputs/test_author",
+    "outputs/test_eval",
+    "outputs/gepa_runs/reports",
 ]
 
 
 def touch_gitkeep(project_root: Path, relative_dir: str) -> None:
     directory = project_root / relative_dir
     directory.mkdir(parents=True, exist_ok=True)
-    (directory / ".gitkeep").touch()
+    if not any(directory.iterdir()):
+        (directory / ".gitkeep").touch()
 
 
 def main() -> None:

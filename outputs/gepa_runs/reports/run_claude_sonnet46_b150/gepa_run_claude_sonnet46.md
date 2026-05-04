@@ -1,7 +1,7 @@
 # GEPA Run Report — Claude Sonnet 4.6
 
 **Date:** 2026-04-24  
-**Script:** `scripts/run_gepa_rate_limited.py`  
+**Script:** `scripts/run_gepa.py`  
 **Task LM:** `anthropic/claude-sonnet-4-6`  
 **Reflection LM:** `anthropic/claude-sonnet-4-6`  
 **Result file:** `outputs/gepa_runs/gepa_result_claude_sonnet46.json`

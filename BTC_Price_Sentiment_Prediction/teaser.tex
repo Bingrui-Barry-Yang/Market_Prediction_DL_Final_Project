@@ -1,0 +1,41 @@
+\documentclass[border=4pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+\usetikzlibrary{
+  positioning, arrows.meta, calc, fit, backgrounds,
+  shapes.geometric, decorations.pathreplacing
+}
+\usepackage{amsmath,amssymb}
+
+\definecolor{datablue}{HTML}{4A90D9}
+\definecolor{gepagreen}{HTML}{6AB04C}
+\definecolor{evalorange}{HTML}{E67E22}
+\definecolor{qwkpurple}{HTML}{9B59B6}
+\definecolor{trustred}{HTML}{D9534F}
+\definecolor{pricegray}{HTML}{95A5A6}
+\definecolor{bgblue}{HTML}{EBF5FB}
+\definecolor{bggreen}{HTML}{EEF8EA}
+\definecolor{bgorange}{HTML}{FEF3E8}
+\definecolor{bggray}{HTML}{F4F6F7}
+
+\tikzset{
+  B/.style={draw, rounded corners=2pt, minimum height=7mm,
+    minimum width=20mm, align=center, font=\scriptsize\sffamily, line width=0.5pt},
+  S/.style={draw, rounded corners=1.5pt, minimum height=6mm,
+    minimum width=18mm, align=center, font=\tiny\sffamily, line width=0.4pt},
+  H/.style={draw, rounded corners=2pt, minimum height=8mm,
+    minimum width=22mm, align=center, font=\scriptsize\sffamily\bfseries,
+    line width=0.6pt},
+  D/.style={draw=black!50, fill=bggray, rounded corners=1.5pt,
+    minimum height=6mm, align=center, font=\tiny\sffamily},
+  R/.style={draw=trustred, fill=trustred!8, rounded corners=2pt,
+    minimum height=7mm, minimum width=20mm, align=center,
+    font=\scriptsize\sffamily\bfseries, line width=0.6pt},
+  a/.style={-{Stealth[length=1.8mm]}, line width=0.45pt},
+  da/.style={-{Stealth[length=1.8mm]}, line width=0.45pt, dashed},
+  d/.style={font=\fontsize{5}{6}\selectfont\sffamily, text=black!55},
+}
+
+\begin{document}
+\input{teaser_body}
+\end{document}

@@ -109,8 +109,7 @@ def litellm_completion_with_retries(
 ) -> tuple[Any, int]:
     """Call litellm.completion with hand-rolled retries on transient errors.
 
-    Mirrors scripts/run_gepa_rate_limited.py:_completion_with_retries but
-    returns (response, retries_used) so the caller can log retry counts.
+    Returns (response, retries_used) so the caller can log retry counts.
     """
     import litellm
 

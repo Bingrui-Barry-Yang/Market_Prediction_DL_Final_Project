@@ -209,7 +209,7 @@ def trust_weighted(ratios: list, confidences: list) -> float:
     Confidence-weighted average ratio.
     trust_weighted = sum(ratio_i * c_i) / sum(c_i)
     """
-    return sum(r * c for r, c in zip(ratios, confidences)) / sum(confidences)
+    return sum(r * c for r, c in zip(ratios, confidences, strict=True)) / sum(confidences)
 
 
 def interpret(score: float) -> str:
@@ -339,7 +339,10 @@ def evaluate_article(article: dict, system_prompt: str | None, llm_model: str) -
     green, red = calculate_areas(prices, baseline, direction)
     ratio      = calculate_ratio(green, red)
 
-    print(f"         baseline=${baseline:,.0f}  green={green:,.0f}  red={red:,.0f}  ratio={ratio:.3f}")
+    print(
+        f"         baseline=${baseline:,.0f}  green={green:,.0f}  "
+        f"red={red:,.0f}  ratio={ratio:.3f}"
+    )
 
     return {
         "article_id":   article_id,
@@ -375,7 +378,7 @@ def main():
     args = parser.parse_args()
 
     articles = []
-    with open(args.articles, "r") as f:
+    with open(args.articles) as f:
         for line in f:
             if line.strip():
                 articles.append(json.loads(line))
@@ -436,7 +439,10 @@ def main():
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for r in results:
-            article_date = next((a["date"] for a in articles if a.get("article_id") == r["article_id"]), "")
+            article_date = next(
+                (a["date"] for a in articles if a.get("article_id") == r["article_id"]),
+                "",
+            )
             prices_list  = r["prices"]
             timestamps   = r["timestamps"]
             baseline     = r["baseline"]
@@ -473,7 +479,10 @@ def main():
                         cum_red += trapezoidal_segment(p0, p1, ref)
 
                 running_ratio = calculate_ratio(cum_green, cum_red)
-                ts = datetime.fromtimestamp(timestamps[h] / 1000, tz=timezone.utc).strftime("%Y-%m-%d %H:%M")
+                ts = datetime.fromtimestamp(
+                    timestamps[h] / 1000,
+                    tz=timezone.utc,
+                ).strftime("%Y-%m-%d %H:%M")
 
                 writer.writerow({
                     "article_id":      r["article_id"],
@@ -490,7 +499,7 @@ def main():
                     "running_ratio":   round(running_ratio, 4),
                 })
 
-    print(f"\n=== Author Trustworthiness ===")
+    print("\n=== Author Trustworthiness ===")
     print(f"Articles evaluated: {len(results)}")
     print(f"Trust (simple):     {simple:.4f}  -- {interpret(simple)}")
     print(f"Trust (weighted):   {weighted:.4f}  -- {interpret(weighted)}")

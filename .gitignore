@@ -10,40 +10,11 @@ __pycache__/
 .env
 .venv/
 
-# Generated outputs — track run artifacts, skip binary pickles
-outputs/**/gepa_state.bin
-outputs/**/*.pkl
-outputs/**/*.pickle
-
-# Data
-data/train/*
-!data/train/.gitkeep
-!data/train/*.jsonl
-!data/train/*.xlsx
-data/test/*
-!data/test/.gitkeep
-!data/test/*.jsonl
-!data/test/*.xlsx
-data/validation/*
-!data/validation/.gitkeep
-!data/validation/*.jsonl
-!data/validation/*.xlsx
-data/external/*
-!data/external/.gitkeep
-!data/external/*.jsonl
-!data/external/*.xlsx
-data/qwk/*
-!data/qwk/.gitkeep
-!data/qwk/*.jsonl
-!data/qwk/*.csv
-!data/qwk/*.json
-!data/qwk/*.md
-!data/qwk/*/
-data/qwk/*/*
-!data/qwk/*/*.jsonl
-!data/qwk/*/*.csv
-!data/qwk/*/*.json
-!data/qwk/*/*.md
+# Generated placeholders and binary state
+.gitkeep
+*.bin
+*.pkl
+*.pickle
 
 # Editors and OS
 .DS_Store
