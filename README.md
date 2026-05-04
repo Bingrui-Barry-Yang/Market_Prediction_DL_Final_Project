@@ -25,7 +25,7 @@ This repository studies whether GEPA prompt optimization helps large language mo
 │   ├── train/articles.jsonl           # 30 canonical GEPA training articles
 │   ├── test/articles_test.jsonl       # 35 held-out test articles
 │   ├── qwk/                           # Derived QWK input tables
-│   └── authordemo/                    # Optional author-validation sample
+│   └── authordemo/                    # Optional author-validation articles and BTC-USD CSV
 ├── outputs/
 │   ├── gepa_runs/                     # GEPA candidates, run logs, reports, figures
 │   ├── test_eval/                     # Per-prediction rows, matrices, metrics
@@ -194,7 +194,7 @@ uv run python scripts/run_gepa_reports.py \
   --run-dir outputs/gepa_runs/bitcoin_sentiment/run_gptoss120b_b150
 ```
 
-Run the optional author-level validation. This evaluates 15 FXStreet Bitcoin forecast articles from one author against the following 30 days of BTC-USD hourly prices. Articles without `gold_score` are first scored with a GEPA prompt and the selected scoring model.
+Run the optional author-level validation. This evaluates 15 FXStreet Bitcoin forecast articles from one author against the following 30 days of BTC-USD hourly prices. Articles without `gold_score` are first scored with a GEPA prompt and the selected scoring model. The `data/authordemo/` folder also includes `btc-usd-max.csv`, a local daily BTC-USD history file (`snapped_at`, `price`, `market_cap`, `total_volume`) spanning 2013-04-28 through 2026-05-04; the current script still fetches hourly Coinbase candles for the 30-day area calculation.
 
 ```bash
 uv run python scripts/evaluate_author.py \
@@ -228,7 +228,7 @@ Overall QWK by task model, computed from `outputs/qwk/per_model/summary.csv`:
 
 Seed-vs-GEPA-best comparison from `outputs/qwk/best_vs_seed/summary.csv`: among 14 task/source pairs with both seed and best scores available, the combined direction-plus-confidence QWK improved in 2 cases, was unchanged in 4 cases, and decreased in 8 cases. This supports the paper's main conclusion: GEPA often made prompts more detailed and sometimes improved broad direction labeling, but it did not reliably improve calibrated 1-15 scoring on the held-out test set.
 
-Optional author-level validation results are stored in `outputs/test_author/`. This stage used the Qwen 3.6 GEPA prompt to score 15 FXStreet "Bitcoin Price Forecast" articles by Manish Chhetri, then compared each extracted direction against Coinbase BTC-USD movement over the next 30 days.
+Optional author-level validation results are stored in `outputs/test_author/`. This stage used the Qwen 3.6 GEPA prompt to score 15 FXStreet "Bitcoin Price Forecast" articles by Manish Chhetri, then compared each extracted direction against Coinbase BTC-USD movement over the next 30 days. `data/authordemo/btc-usd-max.csv` is included as a daily historical BTC-USD reference dataset for this validation slice, while the reported area-based trust scores were generated from hourly Coinbase candles.
 
 | Author-eval metric | Value | Interpretation |
 |---|---:|---|
