@@ -272,6 +272,27 @@ Overall QWK by task model, computed from `outputs/qwk/per_model/summary.csv`:
 | Qwen 3.6 | 662 / 805 | 82.2% | 0.794 | **0.385** | **1.178** | 1.923 | **24.5%** |
 | Gemma 4 E2B | 1330 / 1330 | **100.0%** | 0.636 | 0.338 | 0.974 | 2.422 | 23.6% |
 
+QWK seed-vs-best comparison selected from the final report, computed from `outputs/qwk/best_vs_seed/summary.csv`:
+
+| Task model | Source prompt | Seed QWK sum | Best QWK sum | Delta sum |
+|---|---|---:|---:|---:|
+| Claude | Claude | 1.162 | 0.961 | -0.201 |
+| Claude | Gemma | 1.106 | 1.075 | -0.031 |
+| Claude | GPT-OSS | 1.106 | 1.106 | 0.000 |
+| Claude | Qwen | 1.061 | 1.103 | +0.042 |
+| Gemma | Claude | 1.182 | 1.099 | -0.083 |
+| Gemma | Gemma | 1.117 | 1.245 | +0.128 |
+| Gemma | GPT-OSS | 1.182 | 1.182 | 0.000 |
+| Gemma | Qwen | 1.271 | 1.022 | -0.248 |
+| GPT-OSS | Claude | 1.407 | 1.220 | -0.187 |
+| GPT-OSS | Gemma | 1.353 | 1.129 | -0.224 |
+| GPT-OSS | GPT-OSS | 1.427 | 1.427 | 0.000 |
+| GPT-OSS | Qwen | 1.403 | 1.150 | -0.252 |
+| Qwen | Claude | 1.316 | 1.175 | -0.141 |
+| Qwen | Gemma | -- | -- | -- |
+| Qwen | GPT-OSS | **1.433** | **1.433** | 0.000 |
+| Qwen | Qwen | 1.401 | -- | -- |
+
 Seed-vs-GEPA-best comparison from `outputs/qwk/best_vs_seed/summary.csv`: among 14 task/source pairs with both seed and best scores available, the combined direction-plus-confidence QWK improved in 2 cases, was unchanged in 4 cases, and decreased in 8 cases. This supports the paper's main conclusion: GEPA often made prompts more detailed and sometimes improved broad direction labeling, but it did not reliably improve calibrated 1-15 scoring on the held-out test set.
 
 Optional author-level validation results are stored in `outputs/test_author/`. This stage used the Qwen 3.6 GEPA prompt to score 15 FXStreet "Bitcoin Price Forecast" articles by Manish Chhetri, then compared each extracted direction against Coinbase BTC-USD movement over the next 30 days. `data/authordemo/btc-usd-max.csv` is included as a daily historical BTC-USD reference dataset for this validation slice, while the reported area-based trust scores were generated from hourly Coinbase candles.
