@@ -265,12 +265,12 @@ Stage 1 produced 38 prompt candidates across four source-model GEPA runs:
 
 Overall QWK by task model, computed from `outputs/qwk/per_model/summary.csv`:
 
-| Task model | Parsed rows | Parse rate | Direction QWK | Confidence QWK | QWK sum | MAE | Exact match |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| Claude Sonnet 4.6 | 1081 / 1330 | 81.3% | **0.873** | 0.137 | 1.010 | **1.713** | 16.0% |
-| GPT-OSS 120B | 1325 / 1330 | 99.6% | 0.792 | 0.270 | 1.061 | 1.922 | 22.3% |
-| Qwen 3.6 | 662 / 805 | 82.2% | 0.794 | **0.385** | **1.178** | 1.923 | **24.5%** |
-| Gemma 4 E2B | 1330 / 1330 | **100.0%** | 0.636 | 0.338 | 0.974 | 2.422 | 23.6% |
+| Task model | Parsed rows | Parse rate | Direction QWK | Confidence QWK | QWK sum |
+|---|---:|---:|---:|---:|---:|
+| Claude Sonnet 4.6 | 1081 / 1330 | 81.3% | **0.873** | 0.137 | 1.010 |
+| GPT-OSS 120B | 1325 / 1330 | 99.6% | 0.792 | 0.270 | 1.061 |
+| Qwen 3.6 | 662 / 805 | 82.2% | 0.794 | **0.385** | **1.178** |
+| Gemma 4 E2B | 1330 / 1330 | **100.0%** | 0.636 | 0.338 | 0.974 |
 
 QWK seed-vs-best comparison selected from the final report, computed from `outputs/qwk/best_vs_seed/summary.csv`:
 
