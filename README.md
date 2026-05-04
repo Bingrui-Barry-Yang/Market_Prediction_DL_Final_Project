@@ -42,33 +42,38 @@ This repository studies whether GEPA prompt optimization helps large language mo
 
 ## Architecture
 
-The project is a research workflow, not a production trading system. No neural network is fine-tuned in this repository; the "model architecture" is the prompt-optimization and evaluation loop around external LLMs.
-
-```mermaid
-flowchart LR
-    A["Curated Bitcoin news articles<br/>train: 30 JSONL<br/>test: 35 JSONL"] --> B["ArticleRecord schema validation"]
-    B --> C["Stage 1: GEPA prompt optimization<br/>scripts/run_gepa.py"]
-    C --> D["Prompt candidates<br/>outputs/gepa_runs/bitcoin_sentiment"]
-    D --> E["Stage 2: full test evaluation<br/>scripts/run_test_eval.py"]
-    A --> E
-    E --> F["Structured LLM output<br/>{score: 1..15}"]
-    F --> G["Scoring<br/>partial credit, MAE, RMSE,<br/>direction accuracy, parse rate"]
-    G --> H["QWK analysis<br/>best vs seed and per model"]
-    H --> I["Final report and figures<br/>BTC_Price_Sentiment_Prediction/"]
-```
+The project is a research workflow, not a production trading system. No neural network is fine-tuned in this repository; the model architecture is the prompt-optimization and evaluation loop around external LLMs. The diagram below mirrors the teaser figure used in the final report.
 
 ```mermaid
 flowchart TB
-    S["LLM prompt"] --> R["Read article title + full text"]
-    R --> J["Return JSON only:<br/>{\"score\": integer}"]
-    J --> K{"Score band"}
-    K --> B["1-5 bearish"]
-    K --> N["6-10 neutral"]
-    K --> U["11-15 bullish"]
-    B --> M["Confidence = position inside band"]
-    N --> M
-    U --> M
+    subgraph A["(a) Training-Evaluation-Test"]
+        direction LR
+        Train["30 curated Bitcoin articles<br/>24 train / 6 validation"] --> GEPA["GEPA reflective prompt optimization<br/>budget = 150"]
+        Labels["Human labels<br/>direction + confidence<br/>mapped to score 1-15"] --> Train
+        GEPA --> Prompts["38 prompts<br/>seed + evolved<br/>4 source models"]
+        Test["35 held-out test articles"] --> Prompts
+        Prompts --> Eval["Cross-model evaluation<br/>task LLM x prompt<br/>parse score JSON"]
+        Models["4 task models<br/>Claude / GPT-OSS<br/>Qwen / Gemma"] --> Eval
+        Eval --> QWK["QWK analysis<br/>direction + confidence"]
+        Eval --> Stats["Test statistics<br/>parse / exact / RMSE"]
+        QWK --> SeedBest["Seed vs best<br/>prompt comparison"]
+        QWK --> Ranking["Model ranking<br/>Qwen best sum QWK"]
+    end
+
+    subgraph B["(b) Author Application Demo"]
+        direction LR
+        Author["15 articles<br/>same author<br/>timestamps kept"] --> Best["Best prompt + model<br/>extract score 1-15"]
+        Best --> Pred["Article prediction<br/>direction + confidence"]
+        Prices["Coinbase prices<br/>hourly, 30 days"] --> Pred
+        Pred --> Ratio["Correctness ratio<br/>r_i = (G - R) / (G + R)"]
+        Ratio --> Trust["Trust values<br/>simple + weighted"]
+        Trust -.-> Future["Downstream signal<br/>future price-prediction work"]
+    end
+
+    A --> B
 ```
+
+Key insight from the report teaser: GEPA creates richer Bitcoin-specific prompts, but test-set gains are mixed. Evolved prompts often trade confidence calibration for direction accuracy, and the same structured extraction output can feed the exploratory author-trust demo.
 
 ## Data Contract
 
@@ -105,9 +110,8 @@ Requirements:
 - `uv`
 - Docker and Docker Compose for reproducible container runs
 - Optional API/model services for live runs:
-  - `GEMINI_API_KEY` for Gemini GEPA runs
-  - `ANTHROPIC_API_KEY` for Claude task-model evaluation
-  - local Ollama server for the configured Ollama models
+  - `ANTHROPIC_API_KEY` for Claude Sonnet 4.6 runs
+  - local Ollama server for GPT-OSS 120B, Qwen 3.6, and Gemma 4 E2B
 
 Install locally:
 
@@ -116,6 +120,8 @@ cp .env.example .env
 # edit .env with any live model credentials needed for your run
 uv sync
 ```
+
+Note: Ollama models must be pulled locally before running the Ollama-backed commands, and the Claude API key should be filled into `.env` as `ANTHROPIC_API_KEY`. If a reproduction command fails, Claude Code or Codex can be used as implementation assistants for debugging the local command/environment issue. In this experiment, model calls were run on a Dell GB10 workstation.
 
 Validate the repository without live model calls:
 
@@ -145,20 +151,60 @@ Run a GEPA smoke test:
 ```bash
 docker compose run --rm research uv run python scripts/run_gepa.py \
   --budget 1 \
+  --task-lm ollama_chat/gpt-oss:120b \
+  --reflection-lm ollama_chat/gpt-oss:120b \
   --output outputs/gepa_runs/bitcoin_sentiment/smoke_result_001.json \
   --run-dir outputs/gepa_runs/bitcoin_sentiment/smoke_run_001 \
   data/train/articles.jsonl
 ```
 
-Run a full GEPA optimization. The completed study used a budget of 150 for each source model; model IDs can be changed with `--task-lm` and `--reflection-lm`.
+Run full GEPA optimization for the four source models used in the completed study. Each run uses budget 150, with the task and reflection model set to the same LiteLLM-compatible model ID.
+
+Claude Sonnet 4.6:
 
 ```bash
 docker compose run --rm research uv run python scripts/run_gepa.py \
   --budget 150 \
-  --task-lm gemini/gemini-2.5-flash-lite \
-  --reflection-lm gemini/gemini-2.5-flash-lite \
-  --output outputs/gepa_runs/bitcoin_sentiment/result_budget150.json \
-  --run-dir outputs/gepa_runs/bitcoin_sentiment/run_budget150 \
+  --task-lm anthropic/claude-sonnet-4-6 \
+  --reflection-lm anthropic/claude-sonnet-4-6 \
+  --output outputs/gepa_runs/bitcoin_sentiment/gepa_result_claude_sonnet46.json \
+  --run-dir outputs/gepa_runs/bitcoin_sentiment/claude_sonnet46 \
+  data/train/articles.jsonl
+```
+
+GPT-OSS 120B:
+
+```bash
+docker compose run --rm research uv run python scripts/run_gepa.py \
+  --budget 150 \
+  --task-lm ollama_chat/gpt-oss:120b \
+  --reflection-lm ollama_chat/gpt-oss:120b \
+  --output outputs/gepa_runs/bitcoin_sentiment/result_gptoss120b_b150.json \
+  --run-dir outputs/gepa_runs/bitcoin_sentiment/run_gptoss120b_b150 \
+  data/train/articles.jsonl
+```
+
+Qwen 3.6:
+
+```bash
+docker compose run --rm research uv run python scripts/run_gepa.py \
+  --budget 150 \
+  --task-lm ollama_chat/qwen3.6:latest \
+  --reflection-lm ollama_chat/qwen3.6:latest \
+  --output outputs/gepa_runs/bitcoin_sentiment/result_qwen36_b150.json \
+  --run-dir outputs/gepa_runs/bitcoin_sentiment/run_qwen36_b150 \
+  data/train/articles.jsonl
+```
+
+Gemma 4 E2B:
+
+```bash
+docker compose run --rm research uv run python scripts/run_gepa.py \
+  --budget 150 \
+  --task-lm ollama_chat/gemma4:e2b \
+  --reflection-lm ollama_chat/gemma4:e2b \
+  --output outputs/gepa_runs/bitcoin_sentiment/result_gemma4e2b_b150.json \
+  --run-dir outputs/gepa_runs/bitcoin_sentiment/run_gemma4e2b_b150 \
   data/train/articles.jsonl
 ```
 
